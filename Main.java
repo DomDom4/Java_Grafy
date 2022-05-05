@@ -1,0 +1,32 @@
+import javax.swing.*;
+import javax.swing.plaf.synth.SynthOptionPaneUI;
+
+public class Main {
+    public static void main(String[] args) {
+        String[] options = {"From file","Generate","Cancel"};
+
+        int methodChoice = JOptionPane.showOptionDialog(null, "Make graph:", "Graph making method",
+                JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+
+        if( methodChoice == 0 ) { //wczytaj
+
+        } else if ( methodChoice == 1) { //generuj
+            JTextField width = new JTextField();
+            JTextField length = new JTextField();
+            JTextField lower = new JTextField();
+            JTextField upper = new JTextField();
+            Object[] parameters = {
+                    "Width: ", width,
+                    "Length: ", length,
+                    "Lower range: ", lower,
+                    "Upper range: ", upper
+            };
+            int option = JOptionPane.showConfirmDialog(null, parameters, "Parameters", JOptionPane.OK_CANCEL_OPTION);
+            if( option == 2 )
+                return;
+
+        } else {
+            return;
+        }
+    }
+}
