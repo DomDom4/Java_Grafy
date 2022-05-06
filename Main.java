@@ -1,5 +1,6 @@
 import javax.swing.*;
-import javax.swing.plaf.synth.SynthOptionPaneUI;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class Main {
     public static void main(String[] args) {
@@ -15,11 +16,13 @@ public class Main {
             JTextField length = new JTextField();
             JTextField lower = new JTextField();
             JTextField upper = new JTextField();
+            JTextField outFile = new JTextField();
             Object[] parameters = {
                     "Width: ", width,
                     "Length: ", length,
                     "Lower range: ", lower,
-                    "Upper range: ", upper
+                    "Upper range: ", upper,
+                    "Save file name: ", outFile
             };
             int option = JOptionPane.showConfirmDialog(null, parameters, "Parameters", JOptionPane.OK_CANCEL_OPTION);
             if (option == 2)
@@ -32,6 +35,7 @@ public class Main {
                     Double.parseDouble(lower.getText())
             );
 
+            graph.printGraphToFile(outFile.getText());
         } else {
             return;
         }
