@@ -10,7 +10,7 @@ public class Main {
                 JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
 
         if (methodChoice == 0) { //wczytaj
-
+            String inFileName = JOptionPane.showInputDialog("File name: ");
         } else if (methodChoice == 1) { //generuj
             JTextField width = new JTextField();
             JTextField length = new JTextField();
