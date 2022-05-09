@@ -1,5 +1,3 @@
-import java.util.Random;
-
 public class Node {
     private final int id;
     private int ways;
@@ -20,6 +18,8 @@ public class Node {
     public int getId() {
         return this.id;
     }
+
+    public Node[] getConn() { return this.conn; }
 
     public Node getConnAtIndex(int i) {
         return this.conn[i];

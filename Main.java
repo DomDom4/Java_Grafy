@@ -1,6 +1,4 @@
 import javax.swing.*;
-import java.io.FileWriter;
-import java.io.IOException;
 
 public class Main {
     public static void main(String[] args) {
@@ -36,8 +34,10 @@ public class Main {
             );
 
             graph.printGraphToFile(outFile.getText());
+            System.out.println(graph.checkIntegrity());
         } else {
             return;
         }
+
     }
 }

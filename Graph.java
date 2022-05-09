@@ -1,9 +1,6 @@
-import javax.imageio.IIOException;
-import java.io.File;
-import java.io.FileDescriptor;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.sql.Array;
+import java.util.LinkedList;
 import java.util.Random;
 
 public class Graph {
@@ -52,6 +49,27 @@ public class Graph {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public boolean checkIntegrity() {
+        Node current = nodes[0];
+        LinkedList<Node> working = new LinkedList<>();
+        LinkedList<Node> checked = new LinkedList<>();
+        working.add(current);
+
+        while (!working.isEmpty()) {
+            for (Node node : current.getConn()) {
+                if (!working.contains(node) && !checked.contains(node))
+                    working.add(node);
+            }
+            checked.add(working.poll());
+            current = working.peek();
+        }
+
+        if (checked.size() == this.nodes.length)
+            return true;
+        return false;
+
     }
 
     private int determineWays(int id, int width, int length) {
