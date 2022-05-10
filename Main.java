@@ -2,7 +2,7 @@ import javax.swing.*;
 
 public class Main {
     public static void main(String[] args) {
-        String[] options = {"From file", "Generate", "Cancel"};
+        /*String[] options = {"From file", "Generate", "Cancel"};
 
         int methodChoice = JOptionPane.showOptionDialog(null, "Make graph:", "Graph making method",
                 JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
@@ -35,9 +35,11 @@ public class Main {
 
             graph.printGraphToFile(outFile.getText());
             System.out.println(graph.checkIntegrity());
+
         } else {
             return;
-        }
+        }*/
+        ChoiceFrame init = new ChoiceFrame();
 
     }
 }

@@ -30,6 +30,11 @@ public class Graph {
         }
     }
 
+    /*Konstruktor czytający*/
+    public Graph(String inFile) {
+        ;
+    }
+
     public Node getNodeAtIndex(int i) {
         return nodes[i];
     }
