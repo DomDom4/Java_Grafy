@@ -1,0 +1,53 @@
+import javax.swing.*;
+import java.awt.*;
+
+public class SelectedFrame extends BasicFrame {
+    private static final int MENU_HEIGHT = 37;
+    private static final int BACK_PANEL_HEIGHT = 37;
+    private static final int WINDOW_SIZE_NO_GRAPH = 111;
+    protected JPanel menu;
+    protected JPanel backPanel;
+    protected JPanel graphPanel;
+    protected JButton delete;
+    protected JButton back;
+    protected Graph graph;
+    protected JFileChooser actionFile;
+
+    public SelectedFrame(int width) {
+        back = new JButton("<-Back");
+        setButtonProperties(back);
+        back.setAlignmentX(0);
+
+        backPanel = new JPanel();
+        backPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        backPanel.setBounds(0, 0, width, BACK_PANEL_HEIGHT);
+        backPanel.setBackground(menuBackgroundColor);
+        backPanel.add(back);
+
+        menu = new JPanel();
+        menu.setBounds(0, BACK_PANEL_HEIGHT, width, MENU_HEIGHT);
+        menu.setBackground(menuBackgroundColor);
+        menu.setForeground(fontColor);
+
+        this.add(backPanel);
+        this.add(menu);
+        this.setTitle("Graph");
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setLayout(null);
+        this.setResizable(false);
+        this.setSize(width, WINDOW_SIZE_NO_GRAPH);
+
+        actionFile = new JFileChooser();
+    }
+
+    protected void deleteGraph(int width) {
+        menu.remove(delete);
+        menu.setSize(width, MENU_HEIGHT);
+
+        backPanel.setSize(width, BACK_PANEL_HEIGHT);
+
+        this.remove(graphPanel);
+        this.setSize(width, WINDOW_SIZE_NO_GRAPH);
+    }
+
+}
