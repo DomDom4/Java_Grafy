@@ -45,5 +45,14 @@ public class Node {
         this.edges[i] = value;
     }
 
+    public void setWays(int n) { this.ways = n; }
+    public void setConn(Node[] conn) {
+        this.conn = conn;
+    }
+
+    public void setEdges(double[] edges) {
+        this.edges = edges;
+    }
+
 
 }
