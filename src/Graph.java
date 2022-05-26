@@ -16,7 +16,7 @@ public class Graph {
     }
 
     /*Konstruktor czytający*/
-    public Graph(String inFile) throws NumberFormatException{
+    public Graph(String inFile) throws NumberFormatException {
         this.nbOfGraphs = 1;
         readGraph(inFile);
     }
@@ -56,11 +56,10 @@ public class Graph {
         if (checked.size() == this.nodes.length)
             return true;
         return false;
-
     }
 
     public void divideGraph() {
-        if(this.nbOfGraphs > this.width)
+        if (this.nbOfGraphs > this.width)
             System.out.println("Error");
 
         Random random = new Random();
@@ -70,16 +69,17 @@ public class Graph {
         int[] ww = new int[this.nbOfGraphs]; //tablica węzłów początkowych (width), których ścieżki mają być usunięte
 
         //Wpisywanie do tablic indeksów początkowych węzłów do dzielenia
-        for(i=0; i<this.nbOfGraphs-1; i++){
-            while(wasDrawn(ww, i, (r = random.nextInt(this.width)) )) { }//losowanie dopóki nie będzie węzła, którego jeszcze nie było
+        for (i = 0; i < this.nbOfGraphs - 1; i++) {
+            while (wasDrawn(ww, i, (r = random.nextInt(this.width)))) {
+            }//losowanie dopóki nie będzie węzła, którego jeszcze nie było
             ww[i] = r;
         }
 
         //Usuwanie połączeń węzłów
-        for(i=0; i<this.nbOfGraphs-1; i++){
-            for(j=0; j<this.length; j++){
+        for (i = 0; i < this.nbOfGraphs - 1; i++) {
+            for (j = 0; j < this.length; j++) {
                 deleteConn(ww[i], 1);
-                deleteConn(ww[i]+1, -1);
+                deleteConn(ww[i] + 1, -1);
             }
         }
     }
@@ -87,14 +87,14 @@ public class Graph {
     public Node[] findPath(int start, int end) {
         int tmpi = start;
 
-        while(tmpi > this.width-1)
+        while (tmpi > this.width - 1)
             tmpi -= this.width;
 
-        while(this.nodes[tmpi].getIndexOfConnection(tmpi-1) != -1)
+        while (this.nodes[tmpi].getIndexOfConnection(tmpi - 1) != -1)
             tmpi--;
 
         int ngwidth = 1;
-        while(this.nodes[tmpi].getIndexOfConnection(tmpi+1) != -1) {
+        while (this.nodes[tmpi].getIndexOfConnection(tmpi + 1) != -1) {
             ngwidth++;
             tmpi++;
         }
@@ -110,7 +110,7 @@ public class Graph {
 
         int Qd = ngsize;
 
-        for(int i=0; i<gsize; i++) {
+        for (int i = 0; i < gsize; i++) {
             d[i] = Double.POSITIVE_INFINITY;
             p[i] = null; //null(p, gsize);
         }
@@ -118,12 +118,12 @@ public class Graph {
         d[start] = 0;
         Node c;
 
-        while(Qd > 0){
-            if((c = Q.poll()) == null){
+        while (Qd > 0) {
+            if ((c = Q.poll()) == null) {
                 break;
             }
-            for(int i=0; i<c.getWays(); i++){
-                if(d[c.getConnAtIndex(i).getId()] > d[c.getId()]+c.getEdgeAtIndex(i)){
+            for (int i = 0; i < c.getWays(); i++) {
+                if (d[c.getConnAtIndex(i).getId()] > d[c.getId()] + c.getEdgeAtIndex(i)) {
                     d[c.getConnAtIndex(i).getId()] = d[c.getId()] + c.getEdgeAtIndex(i);
                     p[c.getConnAtIndex(i).getId()] = c;
                 }
@@ -136,7 +136,7 @@ public class Graph {
         temp[k] = this.nodes[end];
         k++;
 
-        while( end != start ){
+        while (end != start) {
             temp[k] = p[end];
             end = p[end].getId();
             k++;
@@ -144,7 +144,7 @@ public class Graph {
 
         Node[] path = new Node[k];
 
-        for(int i=0; i<k; i++) {
+        for (int i = 0; i < k; i++) {
             path[i] = temp[k - i - 1];
             System.out.print(path[i].getId() + "->");
         }
@@ -164,7 +164,9 @@ public class Graph {
         return this.width;
     }
 
-    public int getNbOfNodes(){ return this.nodes.length; }
+    public int getNbOfNodes() {
+        return this.nodes.length;
+    }
 
     private void generateGraph(int width, int length, double upper, double lower) {
         Node[] genNodes = new Node[width * length];
@@ -186,7 +188,7 @@ public class Graph {
         }
     }
 
-    private void readGraph(String inFile) throws NumberFormatException{
+    private void readGraph(String inFile) throws NumberFormatException {
         try {
             File file = new File(inFile);
             FileReader inF = new FileReader(file);
@@ -244,7 +246,10 @@ public class Graph {
                     i++;
                     tmp = "";
                     while (i < line.length() && line.charAt(i) != ' ') {
-                        tmp += line.charAt(i);
+                        if (line.charAt(i) == ',')
+                            tmp += '.';
+                        else
+                            tmp += line.charAt(i);
                         i++;
                     }
                     tmpEdges[ways] = Double.parseDouble(tmp);
@@ -280,7 +285,7 @@ public class Graph {
                 ways = 1;
             else
                 ways = 2;
-        } else if ((id > 0 && id < width - 1) || (id > width * (length -1) && id < width * length - 1) || id % width == 0 || id % width == width - 1) {
+        } else if ((id > 0 && id < width - 1) || (id > width * (length - 1) && id < width * length - 1) || id % width == 0 || id % width == width - 1) {
             if (width == 1 || length == 1)
                 ways = 2;
             else
@@ -325,9 +330,9 @@ public class Graph {
         }
     }
 
-    private boolean wasDrawn(int[] ww, int n,  int r) {
-        for(int i=0; i<n; i++) {
-            if(ww[i] == r)
+    private boolean wasDrawn(int[] ww, int n, int r) {
+        for (int i = 0; i < n; i++) {
+            if (ww[i] == r)
                 return true;
         }
         return false;
@@ -335,18 +340,18 @@ public class Graph {
 
     private void deleteConn(int n, int i) {
         Node tmpn = this.nodes[n];
-        int id = tmpn.getIndexOfConnection(n+i);
+        int id = tmpn.getIndexOfConnection(n + i);
 
-        if(id == -1)
+        if (id == -1)
             System.out.println("Error");
 
-        Node[] tmpC = new Node[tmpn.getWays()-1];
-        double[] tmpE = new double[tmpn.getWays()-1];
+        Node[] tmpC = new Node[tmpn.getWays() - 1];
+        double[] tmpE = new double[tmpn.getWays() - 1];
 
         int k = 0;
 
-        for(int j=0; j<tmpn.getWays(); j++) {
-            if(j != id) {
+        for (int j = 0; j < tmpn.getWays(); j++) {
+            if (j != id) {
                 tmpC[k] = tmpn.getConnAtIndex(j);
                 tmpE[k] = tmpn.getEdgeAtIndex(j);
                 k++;
@@ -354,7 +359,7 @@ public class Graph {
         }
         tmpn.setConn(tmpC);
         tmpn.setEdges(tmpE);
-        tmpn.setWays(tmpn.getWays()-1);
+        tmpn.setWays(tmpn.getWays() - 1);
     }
 
     private LinkedList<Node> priorityQueue(int n) {
