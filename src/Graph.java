@@ -76,7 +76,10 @@ public class Graph {
                     i++;
                     tmp = "";
                     while (i < line.length() && line.charAt(i) != ' ') {
-                        tmp += line.charAt(i);
+                        if(line.charAt(i) == ',')
+                            tmp += '.';
+                        else
+                            tmp += line.charAt(i);
                         i++;
                     }
                     tmpEdges[ways] = Double.parseDouble(tmp);
