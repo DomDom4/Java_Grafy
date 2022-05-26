@@ -1,19 +1,19 @@
 import javax.swing.*;
 import java.awt.*;
 
-public class SelectedFrame extends BasicFrame {
+public class GraphFrame extends BasicColorsFrame {
     private static final int MENU_HEIGHT = 37;
     private static final int BACK_PANEL_HEIGHT = 37;
     private static final int WINDOW_SIZE_NO_GRAPH = 111;
     protected JPanel menu;
     protected JPanel backPanel;
-    protected JPanel graphPanel;
+    protected GraphPanel graphPanel;
     protected JButton delete;
     protected JButton back;
     protected Graph graph;
     protected JFileChooser actionFile;
 
-    public SelectedFrame(int width) {
+    public GraphFrame(int width) {
         back = new JButton("<-Back");
         setButtonProperties(back);
         back.setAlignmentX(0);
@@ -36,6 +36,7 @@ public class SelectedFrame extends BasicFrame {
         this.setLayout(null);
         this.setResizable(false);
         this.setSize(width, WINDOW_SIZE_NO_GRAPH);
+        this.setLocationRelativeTo(null);
 
         actionFile = new JFileChooser();
     }
@@ -48,6 +49,7 @@ public class SelectedFrame extends BasicFrame {
 
         this.remove(graphPanel);
         this.setSize(width, WINDOW_SIZE_NO_GRAPH);
+        this.setLocationRelativeTo(null);
     }
 
 }
