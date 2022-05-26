@@ -16,91 +16,9 @@ public class Graph {
     }
 
     /*Konstruktor czytający*/
-    public Graph(String inFile) {
+    public Graph(String inFile) throws NumberFormatException{
         this.nbOfGraphs = 1;
-
-        try {
-            File file = new File(inFile);
-            FileReader inF = new FileReader(file);
-            BufferedReader in = new BufferedReader(inF);
-            String line = null;
-            String tmp = null;
-
-            line = in.readLine();
-            int i = 0;
-
-            while (line.charAt(i) == ' ') {
-                i++;
-            }
-            tmp = "";
-            while (line.charAt(i) != ' ') {
-                tmp += line.charAt(i);
-                i++;
-            }
-            this.width = Integer.parseInt(tmp);
-
-            while (line.charAt(i) == ' ') {
-                i++;
-            }
-            tmp = "";
-            while (i < line.length()) {
-                tmp += line.charAt(i);
-                i++;
-            }
-            this.length = Integer.parseInt(tmp);
-
-            Node[] fileNodes = new Node[this.width * this.length];
-            int[][] tmpConn = new int[this.width * this.length][4];
-            double[] tmpEdges = new double[4];
-
-            for (int j = 0; j < this.width * this.length; j++) {
-                int ways = 0;
-                i = 0;
-                line = in.readLine();
-
-                while (i < line.length()) {
-                    tmp = "";
-                    while (line.charAt(i) == ' ' || line.charAt(i) == '\t') {
-                        i++;
-                    }
-                    while (line.charAt(i) != ' ') {
-                        tmp += line.charAt(i);
-                        i++;
-                    }
-
-                    tmpConn[j][ways] = Integer.parseInt(tmp);
-
-                    while (line.charAt(i) != ':') {
-                        i++;
-                    }
-                    i++;
-                    tmp = "";
-                    while (i < line.length() && line.charAt(i) != ' ') {
-                        tmp += line.charAt(i);
-                        i++;
-                    }
-                    tmpEdges[ways] = Double.parseDouble(tmp);
-                    ways++;
-                }
-                fileNodes[j] = new Node(j, ways, new Node[ways], new double[ways]);
-                for (int k = 0; k < ways; k++)
-                    fileNodes[j].setEdgeAtIndex(k, tmpEdges[k]);
-
-                /*System.out.print(fileNodes[j].getId() + ": ");
-                for (int k = 0; k < fileNodes[j].getWays(); k++) {
-                    System.out.print(fileNodes[j].getEdgeAtIndex(k) + "(");
-                    System.out.print(fileNodes[j].getConnAtIndex(k) + ") ");
-                }*/
-            }
-            for (int j = 0; j < this.width * this.length; j++)
-                for (int k = 0; k < fileNodes[j].getWays(); k++)
-                    fileNodes[j].setConnAtIndex(k, fileNodes[tmpConn[j][k]]);
-
-            this.nodes = fileNodes;
-            in.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        readGraph(inFile);
     }
 
     public void printGraphToFile(String outFileName) {
@@ -246,6 +164,8 @@ public class Graph {
         return this.width;
     }
 
+    public int getNbOfNodes(){ return this.nodes.length; }
+
     private void generateGraph(int width, int length, double upper, double lower) {
         Node[] genNodes = new Node[width * length];
         for (int i = 0; i < length * width; i++) {
@@ -266,6 +186,91 @@ public class Graph {
         }
     }
 
+    private void readGraph(String inFile) throws NumberFormatException{
+        try {
+            File file = new File(inFile);
+            FileReader inF = new FileReader(file);
+            BufferedReader in = new BufferedReader(inF);
+            String line = null;
+            String tmp = null;
+
+            line = in.readLine();
+            int i = 0;
+
+            while (line.charAt(i) == ' ') {
+                i++;
+            }
+            tmp = "";
+            while (line.charAt(i) != ' ') {
+                tmp += line.charAt(i);
+                i++;
+            }
+            this.width = Integer.parseInt(tmp);
+
+            while (line.charAt(i) == ' ') {
+                i++;
+            }
+            tmp = "";
+            while (i < line.length()) {
+                tmp += line.charAt(i);
+                i++;
+            }
+            this.length = Integer.parseInt(tmp);
+
+            Node[] fileNodes = new Node[this.width * this.length];
+            int[][] tmpConn = new int[this.width * this.length][4];
+            double[] tmpEdges = new double[4];
+
+            for (int j = 0; j < this.width * this.length; j++) {
+                int ways = 0;
+                i = 0;
+                line = in.readLine();
+
+                while (i < line.length()) {
+                    tmp = "";
+                    while (line.charAt(i) == ' ' || line.charAt(i) == '\t') {
+                        i++;
+                    }
+                    while (line.charAt(i) != ' ') {
+                        tmp += line.charAt(i);
+                        i++;
+                    }
+
+                    tmpConn[j][ways] = Integer.parseInt(tmp);
+
+                    while (line.charAt(i) != ':') {
+                        i++;
+                    }
+                    i++;
+                    tmp = "";
+                    while (i < line.length() && line.charAt(i) != ' ') {
+                        tmp += line.charAt(i);
+                        i++;
+                    }
+                    tmpEdges[ways] = Double.parseDouble(tmp);
+                    ways++;
+                }
+                fileNodes[j] = new Node(j, ways, new Node[ways], new double[ways]);
+                for (int k = 0; k < ways; k++)
+                    fileNodes[j].setEdgeAtIndex(k, tmpEdges[k]);
+
+                /*System.out.print(fileNodes[j].getId() + ": ");
+                for (int k = 0; k < fileNodes[j].getWays(); k++) {
+                    System.out.print(fileNodes[j].getEdgeAtIndex(k) + "(");
+                    System.out.print(fileNodes[j].getConnAtIndex(k) + ") ");
+                }*/
+            }
+            for (int j = 0; j < this.width * this.length; j++)
+                for (int k = 0; k < fileNodes[j].getWays(); k++)
+                    fileNodes[j].setConnAtIndex(k, fileNodes[tmpConn[j][k]]);
+
+            this.nodes = fileNodes;
+            in.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private int determineWays(int id, int width, int length) {
         int ways;
         if (width == 1 && length == 1)
@@ -275,7 +280,7 @@ public class Graph {
                 ways = 1;
             else
                 ways = 2;
-        } else if ((id > 0 && id < width - 1) || (id > (width - 1) * length && id < width * length - 1) || id % width == 0 || id % width == width - 1) {
+        } else if ((id > 0 && id < width - 1) || (id > width * (length -1) && id < width * length - 1) || id % width == 0 || id % width == width - 1) {
             if (width == 1 || length == 1)
                 ways = 2;
             else
