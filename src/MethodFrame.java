@@ -1,7 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
 
-public class GraphFrame extends BasicColorsFrame {
+public abstract class MethodFrame extends BasicColorsFrame {
     private static final int MENU_HEIGHT = 37;
     private static final int BACK_PANEL_HEIGHT = 37;
     private static final int WINDOW_SIZE_NO_GRAPH = 111;
@@ -13,7 +13,7 @@ public class GraphFrame extends BasicColorsFrame {
     protected Graph graph;
     protected JFileChooser actionFile;
 
-    public GraphFrame(int width) {
+    public MethodFrame(int width) {
         back = new JButton("<-Back");
         setButtonProperties(back);
         back.setAlignmentX(0);

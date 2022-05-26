@@ -3,7 +3,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class ParamFrame extends GraphFrame implements ActionListener {
+public class ParamFrame extends MethodFrame implements ActionListener {
     private static final int DEFAULT_WIDTH = 1100;
     private JButton generate;
     private JButton save;
@@ -74,28 +74,14 @@ public class ParamFrame extends GraphFrame implements ActionListener {
         } else if (e.getSource() == delete) {
             deleteGraph(DEFAULT_WIDTH);
             save.setEnabled(false);
+            generate.setEnabled(true);
         } else if (e.getSource() == back) {
             this.dispose();
-            SelectMethodFrame init = new SelectMethodFrame();
+            new SelectMethodFrame();
         }
     }
 
     private void showGraphPanel() throws NumberFormatException {
-        if (graphPanel == null) {
-            graphPanel = new JPanel();
-            graphPanel.setBounds(0, 37, 1100, 500);
-            graphPanel.setBackground(graphBackgroundColor);
-        }
-
-        if (delete == null) {
-            delete = new JButton("Delete");
-            setButtonProperties(delete);
-            delete.addActionListener(this);
-        }
-        menu.add(delete);
-
-        save.setEnabled(true);
-
         graph = new Graph(
                 Integer.parseInt(width.getText()),
                 Integer.parseInt(length.getText()),
@@ -103,8 +89,22 @@ public class ParamFrame extends GraphFrame implements ActionListener {
                 Double.parseDouble(lower.getText())
         );
 
+        if (delete == null) {
+            delete = new JButton("Delete");
+            setButtonProperties(delete);
+            delete.addActionListener(this);
+        }
+
+        graphPanel = new GraphPanel(graph);
+        graphPanel.setBackground(graphBackgroundColor);
+
+        menu.add(delete);
+
+        save.setEnabled(true);
+        generate.setEnabled(false);
+
         this.add(graphPanel);
-        this.setSize(DEFAULT_WIDTH, 574);
+        this.setSize(DEFAULT_WIDTH, graphPanel.getHeight() + 111);
         this.setLocationRelativeTo(null);
     }
 
@@ -126,5 +126,6 @@ public class ParamFrame extends GraphFrame implements ActionListener {
         setLabelProperties(newLabel);
         panel.add(newLabel);
     }
+
 
 }

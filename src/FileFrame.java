@@ -2,8 +2,9 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class FileFrame extends GraphFrame implements ActionListener {
+public class FileFrame extends MethodFrame implements ActionListener {
     private static final int DEFAULT_WIDTH = 400;
+    private static final int GRAPH_WIDTH = 1100;
     private JButton open;
     private JButton select;
     private JLabel selectedFile;
@@ -37,45 +38,55 @@ public class FileFrame extends GraphFrame implements ActionListener {
         if (e.getSource() == select) {
             selectFile();
         } else if (e.getSource() == open) {
-            showGraphPanel();
+            try {
+                showGraphPanel();
+            } catch (NumberFormatException ex) {
+                JOptionPane.showConfirmDialog(
+                        null,
+                        "Wrong file format",
+                        "Error",
+                        JOptionPane.DEFAULT_OPTION,
+                        JOptionPane.ERROR_MESSAGE
+                );
+            }
         } else if (e.getSource() == delete) {
             deleteGraph(DEFAULT_WIDTH);
         } else if (e.getSource() == back) {
             this.dispose();
-            SelectMethodFrame init = new SelectMethodFrame();
+            new SelectMethodFrame();
         }
     }
 
     private void selectFile() {
         if (actionFile.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
-            selectedFile.setText("Selected file: "+ actionFile.getSelectedFile().getName());
+            selectedFile.setText("Selected file: " + actionFile.getSelectedFile().getName());
             select.setText("Change");
             open.setEnabled(true);
         }
     }
 
-    private void showGraphPanel() {
+    private void showGraphPanel() throws NumberFormatException {
         if (actionFile.getSelectedFile().exists()) {
+            //graph = new Graph(actionFile.getSelectedFile().getAbsolutePath());
             if (delete == null) {
                 delete = new JButton("Delete");
                 setButtonProperties(delete);
                 delete.addActionListener(this);
             }
 
-            if (graphPanel == null) {
-                graphPanel = new JPanel();
-                graphPanel.setBounds(0, 74, 900, 500);
-                graphPanel.setBackground(graphBackgroundColor);
-            }
+
+            graphPanel = new GraphPanel(graph);
+            graphPanel.setBackground(graphBackgroundColor);
+
 
             menu.add(delete);
-            menu.setSize(900,37);
+            menu.setSize(1100, 37);
 
-            backPanel.setSize(900,37);
+            backPanel.setSize(1100, 37);
 
             this.add(graphPanel);
-            this.setSize(900, 611);
-            graph = new Graph(actionFile.getSelectedFile().getAbsolutePath());
+            this.setSize(GRAPH_WIDTH, graphPanel.getHeight() + 111);
+            this.setLocationRelativeTo(null);
         }
     }
 

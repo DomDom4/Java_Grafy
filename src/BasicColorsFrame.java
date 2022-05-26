@@ -1,8 +1,9 @@
 import javax.swing.*;
 import java.awt.*;
 
-public class BasicColorsFrame extends JFrame {
+public abstract class BasicColorsFrame extends JFrame {
     protected Color buttonColor = new Color(212, 143, 93);
+    protected Color buttonHoverColor = new Color(245, 179, 132);
     protected Color fontColor = new Color(218, 217, 223);
     protected Color menuBackgroundColor = new Color(36, 36, 45);
     protected Color graphBackgroundColor = new Color(176, 177, 190);
@@ -15,6 +16,15 @@ public class BasicColorsFrame extends JFrame {
     }
 
     protected void setButtonProperties(JButton button) {
+        button.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                button.setBackground(buttonHoverColor);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                button.setBackground(buttonColor);
+            }
+        });
+
         button.setBackground(buttonColor);
         button.setForeground(Color.white);
         button.setFont(buttonFont);

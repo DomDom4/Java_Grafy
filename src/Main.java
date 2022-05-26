@@ -1,5 +1,7 @@
+import java.awt.*;
+
 public class Main {
     public static void main(String[] args) {
-         SelectMethodFrame init = new SelectMethodFrame();
+        new SelectMethodFrame();
     }
 }

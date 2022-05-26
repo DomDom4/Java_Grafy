@@ -1,4 +1,5 @@
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -50,10 +51,10 @@ public class SelectMethodFrame extends BasicColorsFrame implements ActionListene
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == readParams) {
             this.dispose();
-            ParamFrame paramFrame = new ParamFrame();
+            new ParamFrame();
         } else if (e.getSource() == readFile) {
             this.dispose();
-            FileFrame fileFrame = new FileFrame();
+            new FileFrame();
         }
     }
 }
