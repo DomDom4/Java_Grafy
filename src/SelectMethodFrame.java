@@ -1,9 +1,8 @@
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class ChoiceFrame extends BasicFrame implements ActionListener {
+public class SelectMethodFrame extends BasicColorsFrame implements ActionListener {
     private static final int BUTTON_PANEL_HEIGHT = 47;
     private static final int LABEL_PANEL_HEIGHT = 37;
     private static final int DEFAULT_WIDTH = 350;
@@ -11,7 +10,7 @@ public class ChoiceFrame extends BasicFrame implements ActionListener {
     private JButton readParams;
     private JButton readFile;
 
-    public ChoiceFrame() {
+    public SelectMethodFrame() {
         JPanel buttonPanel = new JPanel();
         JPanel labelPanel = new JPanel();
         JLabel label = new JLabel("Select a method of creating a graph");
@@ -43,6 +42,7 @@ public class ChoiceFrame extends BasicFrame implements ActionListener {
         this.setLayout(null);
         this.setResizable(false);
         this.setSize(DEFAULT_WIDTH, WINDOW_HEIGHT);
+        this.setLocationRelativeTo(null);
         this.setVisible(true);
     }
 

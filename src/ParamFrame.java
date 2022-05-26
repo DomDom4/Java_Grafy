@@ -3,7 +3,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class ParamFrame extends SelectedFrame implements ActionListener {
+public class ParamFrame extends GraphFrame implements ActionListener {
+    private static final int DEFAULT_WIDTH = 1100;
     private JButton generate;
     private JButton save;
     private JTextField width;
@@ -12,7 +13,7 @@ public class ParamFrame extends SelectedFrame implements ActionListener {
     private JTextField lower;
 
     public ParamFrame() {
-        super(1100);
+        super(DEFAULT_WIDTH);
         generate = new JButton("Generate");
         save = new JButton("Save");
         width = new JTextField();
@@ -56,20 +57,30 @@ public class ParamFrame extends SelectedFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == generate) {
-            drawGraph();
+            try {
+                showGraphPanel();
+            } catch (NumberFormatException ex) {
+                JOptionPane.showConfirmDialog(
+                        null,
+                        "Dimensions should be integers and range doubles",
+                        "Error",
+                        JOptionPane.DEFAULT_OPTION,
+                        JOptionPane.ERROR_MESSAGE
+                );
+            }
             save.setEnabled(true);
         } else if (e.getSource() == save) {
             saveGraph();
         } else if (e.getSource() == delete) {
-            deleteGraph(1100);
+            deleteGraph(DEFAULT_WIDTH);
             save.setEnabled(false);
         } else if (e.getSource() == back) {
             this.dispose();
-            ChoiceFrame init = new ChoiceFrame();
+            SelectMethodFrame init = new SelectMethodFrame();
         }
     }
 
-    private void drawGraph() {
+    private void showGraphPanel() throws NumberFormatException {
         if (graphPanel == null) {
             graphPanel = new JPanel();
             graphPanel.setBounds(0, 37, 1100, 500);
@@ -93,13 +104,20 @@ public class ParamFrame extends SelectedFrame implements ActionListener {
         );
 
         this.add(graphPanel);
-        this.setSize(1100, 574);
+        this.setSize(DEFAULT_WIDTH, 574);
+        this.setLocationRelativeTo(null);
     }
 
     private void saveGraph() {
         if (actionFile.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
             graph.printGraphToFile(actionFile.getSelectedFile().getAbsolutePath());
-            JOptionPane.showConfirmDialog(null, "Graph saved", "Data saved", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE);
+            JOptionPane.showConfirmDialog(
+                    null,
+                    "Graph saved",
+                    "Data saved",
+                    JOptionPane.DEFAULT_OPTION,
+                    JOptionPane.PLAIN_MESSAGE
+            );
         }
     }
 

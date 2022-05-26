@@ -1,9 +1,8 @@
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class FileFrame extends SelectedFrame implements ActionListener {
+public class FileFrame extends GraphFrame implements ActionListener {
     private static final int DEFAULT_WIDTH = 400;
     private JButton open;
     private JButton select;
@@ -38,12 +37,12 @@ public class FileFrame extends SelectedFrame implements ActionListener {
         if (e.getSource() == select) {
             selectFile();
         } else if (e.getSource() == open) {
-            openGraph();
+            showGraphPanel();
         } else if (e.getSource() == delete) {
             deleteGraph(DEFAULT_WIDTH);
         } else if (e.getSource() == back) {
             this.dispose();
-            ChoiceFrame init = new ChoiceFrame();
+            SelectMethodFrame init = new SelectMethodFrame();
         }
     }
 
@@ -55,7 +54,7 @@ public class FileFrame extends SelectedFrame implements ActionListener {
         }
     }
 
-    private void openGraph() {
+    private void showGraphPanel() {
         if (actionFile.getSelectedFile().exists()) {
             if (delete == null) {
                 delete = new JButton("Delete");

@@ -1,7 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
 
-public class BasicFrame extends JFrame {
+public class BasicColorsFrame extends JFrame {
     protected Color buttonColor = new Color(212, 143, 93);
     protected Color fontColor = new Color(218, 217, 223);
     protected Color menuBackgroundColor = new Color(36, 36, 45);
