@@ -67,7 +67,7 @@ public class FileFrame extends MethodFrame implements ActionListener {
 
     private void showGraphPanel() throws NumberFormatException {
         if (actionFile.getSelectedFile().exists()) {
-            //graph = new Graph(actionFile.getSelectedFile().getAbsolutePath());
+            graph = new Graph(actionFile.getSelectedFile().getAbsolutePath());
             if (delete == null) {
                 delete = new JButton("Delete");
                 setButtonProperties(delete);
