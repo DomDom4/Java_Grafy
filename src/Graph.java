@@ -87,6 +87,7 @@ public class Graph {
     public Node[] findPath(int start, int end) {
         int tmpi = start;
 
+        // potrzebne gdy graf jest podzielony
         while (tmpi > this.width - 1)
             tmpi -= this.width;
 
@@ -98,44 +99,41 @@ public class Graph {
             ngwidth++;
             tmpi++;
         }
+        // --
 
-        int gsize = this.width * this.length, k = 0;
+        int gsize = this.width * this.length;
 
         int ngsize = ngwidth * this.length;
         LinkedList<Node> Q = priorityQueue(start);
 
-        double[] d = new double[ngsize];
-        Node[] p = new Node[ngsize];
-        Node[] temp = new Node[ngsize];
-
-        int Qd = ngsize;
+        double[] d = new double[gsize];
+        Node[] p = new Node[gsize];
 
         for (int i = 0; i < gsize; i++) {
             d[i] = Double.POSITIVE_INFINITY;
-            p[i] = null; //null(p, gsize);
+            p[i] = null;
         }
 
         d[start] = 0;
         Node c;
 
-        while (Qd > 0) {
-            if ((c = Q.poll()) == null) {
-                break;
-            }
+        while (!Q.isEmpty()) {
+            c = Q.poll();
             for (int i = 0; i < c.getWays(); i++) {
                 if (d[c.getConnAtIndex(i).getId()] > d[c.getId()] + c.getEdgeAtIndex(i)) {
                     d[c.getConnAtIndex(i).getId()] = d[c.getId()] + c.getEdgeAtIndex(i);
                     p[c.getConnAtIndex(i).getId()] = c;
                 }
             }
-            Qd--;
         }
 
-        double val_s = d[end];
-
+        double val_s = d[end]; // długość ścieżki
+        Node[] temp = new Node[ngsize];
+        int k = 0;
         temp[k] = this.nodes[end];
         k++;
 
+        //zapisanie ścieżki do tablicy pomocniczej temp
         while (end != start) {
             temp[k] = p[end];
             end = p[end].getId();
@@ -144,11 +142,12 @@ public class Graph {
 
         Node[] path = new Node[k];
 
+        //przepisanie ścieżki w poprawnej kolejności do tablicy path
         for (int i = 0; i < k; i++) {
             path[i] = temp[k - i - 1];
-            System.out.print(path[i].getId() + "->");
+            //System.out.print(path[i].getId() + "->");
         }
-        System.out.println(val_s);
+        //System.out.println(val_s);
         return path;
     }
 
