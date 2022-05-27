@@ -74,7 +74,7 @@ public class ParamFrame extends MethodFrame implements ActionListener {
         } else if (e.getSource() == delete) {
             deleteGraph(DEFAULT_WIDTH);
             save.setEnabled(false);
-            generate.setEnabled(true);
+            //generate.setEnabled(true);
         } else if (e.getSource() == back) {
             this.dispose();
             new SelectMethodFrame();
@@ -97,11 +97,12 @@ public class ParamFrame extends MethodFrame implements ActionListener {
 
         graphPanel = new GraphPanel(graph);
         graphPanel.setBackground(graphBackgroundColor);
+        graphPanel.repaint();
 
         menu.add(delete);
 
         save.setEnabled(true);
-        generate.setEnabled(false);
+        //generate.setEnabled(false);
 
         this.add(graphPanel);
         this.setSize(DEFAULT_WIDTH, graphPanel.getHeight() + 111);

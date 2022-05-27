@@ -152,6 +152,30 @@ public class Graph {
         return path;
     }
 
+    public boolean hasRightConn(int index) {
+        boolean connExists = false;
+        for (int i = 0; i < this.nodes[index].getConn().length; i++)
+            if (index + 1 == this.nodes[index].getConnAtIndex(i).getId()) {
+                connExists = true;
+                break;
+            }
+        if (width != 1 && connExists)
+            return true;
+        return false;
+    }
+
+    public boolean hasDownConn(int index) {
+        boolean connExists = false;
+        for (int i = 0; i < this.nodes[index].getConn().length; i++)
+            if (index + this.width == this.nodes[index].getConnAtIndex(i).getId()) {
+                connExists = true;
+                break;
+            }
+        if (length != 1 && connExists)
+            return true;
+        return false;
+    }
+
     public Node[] getNodes() {
         return this.nodes;
     }

@@ -77,7 +77,7 @@ public class FileFrame extends MethodFrame implements ActionListener {
 
             graphPanel = new GraphPanel(graph);
             graphPanel.setBackground(graphBackgroundColor);
-
+            graphPanel.repaint();
 
             menu.add(delete);
             menu.setSize(1100, 37);

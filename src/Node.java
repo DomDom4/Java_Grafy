@@ -54,5 +54,4 @@ public class Node {
         this.edges = edges;
     }
 
-
 }

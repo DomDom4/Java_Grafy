@@ -1,17 +1,31 @@
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 
 public class GraphPanel extends JPanel {
+    public static final int MAX_HEIGHT = Toolkit.getDefaultToolkit().getScreenSize().height - 150;
     private static final int MAX_DIAMETER = 50;
     private static final int MIN_DIAMETER = 10;
     private static final int DEFAULT_WIDTH = 1100;
+    private static final int GRADIENT_HEIGHT = 30;
     Graph graph;
 
     public GraphPanel(Graph graph) {
         super();
         this.graph = graph;
-        this.setBounds(0, 74, 1100, determineHeight());
-        repaint();
+        if (isTooBig() == true) {
+            JOptionPane.showConfirmDialog(
+                    null,
+                    "Dimensions too big to draw",
+                    "Info",
+                    JOptionPane.DEFAULT_OPTION,
+                    JOptionPane.PLAIN_MESSAGE
+            );
+            this.setBounds(0, 74, 1100, 0);
+        } else {
+            this.setBounds(0, 74, 1100, determineHeight() + GRADIENT_HEIGHT);
+        }
+        //repaint();
     }
 
     @Override
@@ -20,105 +34,95 @@ public class GraphPanel extends JPanel {
         super.paintComponent(g2d);
         int nodeSize = determineNodeSize();
         int leftMargin = determineMargin(this.getWidth(), nodeSize, graph.getWidth());
-        int upMargin = determineMargin(this.getHeight(), nodeSize, graph.getLength());
-        drawNodes(g2d,nodeSize,upMargin,leftMargin);
-        drawEdges(g2d,nodeSize,upMargin,leftMargin);
-    }
+        int upMargin = determineMargin(this.getHeight()-GRADIENT_HEIGHT, nodeSize, graph.getLength());
 
-    private void drawNodes(Graphics2D g, int nodeSize, int upMargin, int leftMargin) {
-        int heightController = 0;
-        for (int i = 0; i < graph.getLength(); i++) {
-            int widthController = 0;
-            for (int j = 0; j < graph.getWidth(); j++) {
-                g.setColor(new Color(36, 36, 45));
-                g.fillOval(
-                        leftMargin + (widthController * nodeSize),
-                        upMargin + (heightController * nodeSize),
-                        nodeSize,
-                        nodeSize
-                );
-                widthController += 2;
-            }
-            heightController += 2;
+        ArrayList<NodeCircle> nodes = makeNodeCircles(leftMargin, upMargin, nodeSize);
+        for (NodeCircle n : nodes) {
+            g2d.fillOval(n.x, n.y, n.diameter, n.diameter);
         }
+
+        drawEdges(g2d, nodes);
+        drawGradient(g2d);
     }
 
-    private void drawEdges(Graphics2D g, int nodeSize, int upMargin, int leftMargin) {
-        int heightController = 0;
-        for (int i = 0; i < graph.getLength(); i++) {
-            int widthController = 1;
-            for (int j = 0; j < graph.getWidth() - 1; j++) {
+    private void drawEdges(Graphics2D g, ArrayList<NodeCircle> nodes) {
+        int nbOfNodes = graph.getNbOfNodes();
+        int lightR = 255, lightG = 255, lightB = 204;
+        int darkR = 212, darkG = 143, darkB = 93;
+        int stepR = (lightR-darkR)/nbOfNodes;
+        int stepG = (lightG-darkG)/nbOfNodes;
+        int stepB = (lightB-darkB)/nbOfNodes;
+        int size = nodes.get(0).diameter;
+        g.setColor(new Color(lightR,lightG,lightB));
+        for (int i = 0; i < nbOfNodes; i++) {
+            boolean right = graph.hasRightConn(i);
+            boolean down = graph.hasDownConn(i);
+            if (right) {
                 g.drawLine(
-                        leftMargin + (widthController * nodeSize),
-                        upMargin + (heightController * nodeSize) + nodeSize / 2,
-                        leftMargin + ((widthController + 1) * nodeSize),
-                        upMargin + (heightController * nodeSize) + nodeSize / 2
+                        nodes.get(i).x + size,
+                        nodes.get(i).y + size / 2,
+                        nodes.get(i).x + size * 2,
+                        nodes.get(i).y + size / 2
                 );
-                widthController+=2;
             }
-            widthController = 0;
-            heightController++;
-            if (i != graph.getLength() - 1) {
-                for (int j = 0; j < graph.getWidth(); j++) {
-                    g.drawLine(
-                            leftMargin + (widthController * nodeSize) + nodeSize / 2,
-                            upMargin + heightController * nodeSize,
-                            leftMargin + (widthController * nodeSize) + nodeSize / 2,
-                            upMargin + (heightController + 1) * nodeSize
-                    );
-                    widthController += 2;
-                }
+            if (down) {
+                g.drawLine(
+                        nodes.get(i).x + size / 2,
+                        nodes.get(i).y + size,
+                        nodes.get(i).x + size / 2,
+                        nodes.get(i).y + size * 2
+                );
             }
-            heightController++;
         }
+    }
+
+    private void drawGradient(Graphics2D g){
+        JLabel low = new JLabel("0.0");
+        low.setLocation(0,this.getHeight()-GRADIENT_HEIGHT);
+        JLabel high = new JLabel("5.0");
+        high.setLocation(DEFAULT_WIDTH, this.getHeight()-GRADIENT_HEIGHT);
+        GradientPaint gp = new GradientPaint(
+                0,
+                0,
+                new Color(255,255,204),
+                this.getWidth(),
+                0,
+                new Color(212,143,93)
+        );
+        g.setPaint(gp);
+        g.fillRect(0, this.getHeight()-GRADIENT_HEIGHT, DEFAULT_WIDTH, this.getHeight());
     }
 
 
     private int determineHeight() {
-        int maxHeight = Toolkit.getDefaultToolkit().getScreenSize().height - 120;
         int rows = graph.getLength() * 2 + 1;
         int height;
-        if ((double) (maxHeight / rows) < MIN_DIAMETER) {
-            JOptionPane.showConfirmDialog(
-                    null,
-                    "Dimensions too big to draw",
-                    "Info",
-                    JOptionPane.DEFAULT_OPTION,
-                    JOptionPane.PLAIN_MESSAGE
-            );
+        if ((double) (MAX_HEIGHT / rows) < MIN_DIAMETER) {
             height = 0;
-        } else if ((double) (maxHeight / rows) == MIN_DIAMETER) {
-            height = maxHeight;
-        } else if ((double) (maxHeight / rows) >= MAX_DIAMETER) {
+        } else if ((double) (MAX_HEIGHT / rows) == MIN_DIAMETER) {
+            height = MAX_HEIGHT;
+        } else if ((double) (MAX_HEIGHT / rows) >= MAX_DIAMETER) {
             height = rows * MAX_DIAMETER;
         } else {
-            double nodeSize = (double) (maxHeight / rows);
+            double nodeSize = (double) (MAX_HEIGHT / rows);
             height = (int) (rows * Math.ceil(nodeSize));
         }
         return height;
     }
 
     private int determineNodeSize() {
-        int maxHeight = Toolkit.getDefaultToolkit().getScreenSize().height - 120;
         int rows = graph.getLength() * 2 + 1;
         int cols = graph.getWidth() * 2 + 1;
         int size;
-        if ((maxHeight / rows) >= MAX_DIAMETER && (DEFAULT_WIDTH / cols) >= MAX_DIAMETER)
+        if ((MAX_HEIGHT / rows) >= MAX_DIAMETER && (DEFAULT_WIDTH / cols) >= MAX_DIAMETER)
             size = MAX_DIAMETER;
-        else if ((maxHeight / rows) == MIN_DIAMETER || (DEFAULT_WIDTH / cols) == MIN_DIAMETER)
+        else if ((MAX_HEIGHT / rows) == MIN_DIAMETER || (DEFAULT_WIDTH / cols) == MIN_DIAMETER)
             size = MIN_DIAMETER;
-        else if ((maxHeight / rows) < MIN_DIAMETER || (DEFAULT_WIDTH / cols) < MIN_DIAMETER) {
+        else if ((MAX_HEIGHT / rows) < MIN_DIAMETER || (DEFAULT_WIDTH / cols) < MIN_DIAMETER) {
             size = 0;
-            JOptionPane.showConfirmDialog(
-                    null,
-                    "Dimensions too big to draw",
-                    "Info",
-                    JOptionPane.DEFAULT_OPTION,
-                    JOptionPane.PLAIN_MESSAGE
-            );
         } else {
-            if ((maxHeight / rows) < (DEFAULT_WIDTH / cols))
-                size = maxHeight / rows;
+            if ((MAX_HEIGHT / rows) < (DEFAULT_WIDTH / cols))
+                size = MAX_HEIGHT / rows;
             else
                 size = DEFAULT_WIDTH / cols;
         }
@@ -127,5 +131,42 @@ public class GraphPanel extends JPanel {
 
     private int determineMargin(int dimension, int nodeSize, int nbOfNodesPerDimension) {
         return (dimension - (nbOfNodesPerDimension * 2 - 1) * nodeSize) / 2;
+    }
+
+    private boolean isTooBig() {
+        boolean outcome = false;
+        if ((graph.getWidth() * 2 + 1) * MIN_DIAMETER > DEFAULT_WIDTH || (graph.getLength() * 2 + 1) * MIN_DIAMETER > MAX_HEIGHT)
+            outcome = true;
+        return outcome;
+    }
+
+    private ArrayList<NodeCircle> makeNodeCircles(int leftMargin, int upMargin, int nodeSize) {
+        ArrayList<NodeCircle> nodes = new ArrayList<>();
+        int heightController = 0;
+        for (int i = 0; i < graph.getLength(); i++) {
+            int widthController = 0;
+            for (int j = 0; j < graph.getWidth(); j++) {
+                nodes.add(new NodeCircle(
+                        leftMargin + (widthController * nodeSize),
+                        upMargin + (heightController * nodeSize),
+                        nodeSize
+                ));
+                widthController += 2;
+            }
+            heightController += 2;
+        }
+        return nodes;
+    }
+
+    private class NodeCircle {
+        int x;
+        int y;
+        int diameter;
+
+        NodeCircle(int x, int y, int diameter) {
+            this.x = x;
+            this.y = y;
+            this.diameter = diameter;
+        }
     }
 }
