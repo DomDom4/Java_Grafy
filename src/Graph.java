@@ -153,7 +153,7 @@ public class Graph {
 
     public boolean hasRightConn(int index) {
         boolean connExists = false;
-        for (int i = 0; i < this.nodes[index].getConn().length; i++)
+        for (int i = 0; i < this.nodes[index].getWays(); i++)
             if (index + 1 == this.nodes[index].getConnAtIndex(i).getId()) {
                 connExists = true;
                 break;
@@ -165,7 +165,7 @@ public class Graph {
 
     public boolean hasDownConn(int index) {
         boolean connExists = false;
-        for (int i = 0; i < this.nodes[index].getConn().length; i++)
+        for (int i = 0; i < this.nodes[index].getWays(); i++)
             if (index + this.width == this.nodes[index].getConnAtIndex(i).getId()) {
                 connExists = true;
                 break;
@@ -230,7 +230,7 @@ public class Graph {
                 tmp += line.charAt(i);
                 i++;
             }
-            this.width = Integer.parseInt(tmp);
+            this.length = Integer.parseInt(tmp);
 
             while (line.charAt(i) == ' ') {
                 i++;
@@ -240,7 +240,7 @@ public class Graph {
                 tmp += line.charAt(i);
                 i++;
             }
-            this.length = Integer.parseInt(tmp);
+            this.width = Integer.parseInt(tmp);
 
             Node[] fileNodes = new Node[this.width * this.length];
             int[][] tmpConn = new int[this.width * this.length][4];
