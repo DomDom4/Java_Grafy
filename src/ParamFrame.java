@@ -58,6 +58,8 @@ public class ParamFrame extends MethodFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == generate) {
             try {
+                if (graphPanel != null)
+                    deleteGraph(DEFAULT_WIDTH);
                 showGraphPanel();
             } catch (NumberFormatException ex) {
                 JOptionPane.showConfirmDialog(
@@ -74,7 +76,6 @@ public class ParamFrame extends MethodFrame implements ActionListener {
         } else if (e.getSource() == delete) {
             deleteGraph(DEFAULT_WIDTH);
             save.setEnabled(false);
-            //generate.setEnabled(true);
         } else if (e.getSource() == back) {
             this.dispose();
             new SelectMethodFrame();

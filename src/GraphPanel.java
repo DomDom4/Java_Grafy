@@ -21,9 +21,9 @@ public class GraphPanel extends JPanel {
                     JOptionPane.DEFAULT_OPTION,
                     JOptionPane.PLAIN_MESSAGE
             );
-            this.setBounds(0, 74, 1100, 0);
+            this.setBounds(0, 74, DEFAULT_WIDTH, 0);
         } else {
-            this.setBounds(0, 74, 1100, determineHeight() + GRADIENT_HEIGHT);
+            this.setBounds(0, 74, DEFAULT_WIDTH, determineHeight() + GRADIENT_HEIGHT);
         }
         //repaint();
     }
@@ -34,30 +34,28 @@ public class GraphPanel extends JPanel {
         super.paintComponent(g2d);
         int nodeSize = determineNodeSize();
         int leftMargin = determineMargin(this.getWidth(), nodeSize, graph.getWidth());
-        int upMargin = determineMargin(this.getHeight()-GRADIENT_HEIGHT, nodeSize, graph.getLength());
+        int upMargin = determineMargin(this.getHeight() - GRADIENT_HEIGHT, nodeSize, graph.getLength());
 
         ArrayList<NodeCircle> nodes = makeNodeCircles(leftMargin, upMargin, nodeSize);
+        drawEdges(g2d, nodes);
+        g.setColor(new Color(36, 36, 45));
         for (NodeCircle n : nodes) {
             g2d.fillOval(n.x, n.y, n.diameter, n.diameter);
         }
-
-        drawEdges(g2d, nodes);
         drawGradient(g2d);
     }
 
     private void drawEdges(Graphics2D g, ArrayList<NodeCircle> nodes) {
         int nbOfNodes = graph.getNbOfNodes();
-        int lightR = 255, lightG = 255, lightB = 204;
-        int darkR = 212, darkG = 143, darkB = 93;
-        int stepR = (lightR-darkR)/nbOfNodes;
-        int stepG = (lightG-darkG)/nbOfNodes;
-        int stepB = (lightB-darkB)/nbOfNodes;
         int size = nodes.get(0).diameter;
-        g.setColor(new Color(lightR,lightG,lightB));
+        double lowerBound = this.graph.getLower();
+        double upperBound = this.graph.getUpper();
+        g.setStroke(new BasicStroke(4));
         for (int i = 0; i < nbOfNodes; i++) {
-            boolean right = graph.hasRightConn(i);
-            boolean down = graph.hasDownConn(i);
-            if (right) {
+            double rightVal = graph.getRightValue(i);
+            double downVal = graph.getDownValue(i);
+            if (rightVal != -1) {
+                g.setColor(getEdgeColor(lowerBound, upperBound, rightVal));
                 g.drawLine(
                         nodes.get(i).x + size,
                         nodes.get(i).y + size / 2,
@@ -65,7 +63,8 @@ public class GraphPanel extends JPanel {
                         nodes.get(i).y + size / 2
                 );
             }
-            if (down) {
+            if (downVal != -1) {
+                g.setColor(getEdgeColor(lowerBound, upperBound, downVal));
                 g.drawLine(
                         nodes.get(i).x + size / 2,
                         nodes.get(i).y + size,
@@ -76,21 +75,33 @@ public class GraphPanel extends JPanel {
         }
     }
 
-    private void drawGradient(Graphics2D g){
+    private void drawGradient(Graphics2D g) {
         JLabel low = new JLabel("0.0");
-        low.setLocation(0,this.getHeight()-GRADIENT_HEIGHT);
+        low.setLocation(0, this.getHeight() - GRADIENT_HEIGHT);
         JLabel high = new JLabel("5.0");
-        high.setLocation(DEFAULT_WIDTH, this.getHeight()-GRADIENT_HEIGHT);
+        high.setLocation(DEFAULT_WIDTH, this.getHeight() - GRADIENT_HEIGHT);
         GradientPaint gp = new GradientPaint(
                 0,
                 0,
-                new Color(255,255,204),
+                new Color(255, 255, 204),
                 this.getWidth(),
                 0,
-                new Color(212,143,93)
+                new Color(212, 143, 93)
         );
         g.setPaint(gp);
-        g.fillRect(0, this.getHeight()-GRADIENT_HEIGHT, DEFAULT_WIDTH, this.getHeight());
+        g.fillRect(0, this.getHeight() - GRADIENT_HEIGHT, DEFAULT_WIDTH, this.getHeight());
+    }
+
+    private Color getEdgeColor(double lower, double upper, double value) {
+        int lightR = 255, lightG = 255, lightB = 204;
+        int darkR = 212, darkG = 143, darkB = 93;
+        double redStep = (lightR - darkR) / (upper - lower);
+        int redVal = (int) Math.round(lightR - redStep * value);
+        double greenStep = (lightG - darkG) / (upper - lower);
+        int greenVal = (int) Math.round(lightG - greenStep * value);
+        double blueStep = (lightB - darkB) / (upper - lower);
+        int blueVal = (int) Math.round(lightB - blueStep * value);
+        return new Color(redVal, greenVal, blueVal);
     }
 
 

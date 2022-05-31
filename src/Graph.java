@@ -8,11 +8,20 @@ public class Graph {
     private int nbOfGraphs;
     private int length;
     private int width;
+    private double lower;
+    private double upper;
 
     /*Konstruktor generujący*/
     public Graph(int width, int length, double upper, double lower) {
         generateGraph(width, length, upper, lower);
         this.nbOfGraphs = 1;
+        if (lower < upper) {
+            this.lower = lower;
+            this.upper = upper;
+        } else {
+            this.upper = lower;
+            this.lower = upper;
+        }
     }
 
     /*Konstruktor czytający*/
@@ -151,32 +160,38 @@ public class Graph {
         return path;
     }
 
-    public boolean hasRightConn(int index) {
-        boolean connExists = false;
-        for (int i = 0; i < this.nodes[index].getWays(); i++)
-            if (index + 1 == this.nodes[index].getConnAtIndex(i).getId()) {
-                connExists = true;
-                break;
-            }
-        if (width != 1 && connExists)
-            return true;
-        return false;
+    public double getRightValue(int index) {
+        double value = -1;
+        if (width != 1)
+            for (int i = 0; i < this.nodes[index].getWays(); i++)
+                if (index + 1 == this.nodes[index].getConnAtIndex(i).getId()) {
+                    value = this.nodes[index].getEdgeAtIndex(i);
+                    break;
+                }
+        return value;
     }
 
-    public boolean hasDownConn(int index) {
-        boolean connExists = false;
-        for (int i = 0; i < this.nodes[index].getWays(); i++)
-            if (index + this.width == this.nodes[index].getConnAtIndex(i).getId()) {
-                connExists = true;
-                break;
-            }
-        if (length != 1 && connExists)
-            return true;
-        return false;
+    public double getDownValue(int index) {
+        double value = -1;
+        if (length != 1)
+            for (int i = 0; i < this.nodes[index].getWays(); i++)
+                if (index + this.width == this.nodes[index].getConnAtIndex(i).getId()) {
+                    value = this.nodes[index].getEdgeAtIndex(i);
+                    break;
+                }
+        return value;
     }
 
     public Node[] getNodes() {
         return this.nodes;
+    }
+
+    public double getLower() {
+        return this.lower;
+    }
+
+    public double getUpper() {
+        return this.upper;
     }
 
     public int getLength() {
@@ -230,7 +245,7 @@ public class Graph {
                 tmp += line.charAt(i);
                 i++;
             }
-            this.length = Integer.parseInt(tmp);
+            this.width = Integer.parseInt(tmp);
 
             while (line.charAt(i) == ' ') {
                 i++;
@@ -240,11 +255,13 @@ public class Graph {
                 tmp += line.charAt(i);
                 i++;
             }
-            this.width = Integer.parseInt(tmp);
+            this.length = Integer.parseInt(tmp);
 
             Node[] fileNodes = new Node[this.width * this.length];
             int[][] tmpConn = new int[this.width * this.length][4];
             double[] tmpEdges = new double[4];
+            double lower = Double.POSITIVE_INFINITY;
+            double upper = 0;
 
             for (int j = 0; j < this.width * this.length; j++) {
                 int ways = 0;
@@ -279,8 +296,14 @@ public class Graph {
                     ways++;
                 }
                 fileNodes[j] = new Node(j, ways, new Node[ways], new double[ways]);
-                for (int k = 0; k < ways; k++)
+
+                for (int k = 0; k < ways; k++) {
                     fileNodes[j].setEdgeAtIndex(k, tmpEdges[k]);
+                    if (tmpEdges[k] < lower)
+                        lower = tmpEdges[k];
+                    if (tmpEdges[k] > upper)
+                        upper = tmpEdges[k];
+                }
 
                 /*System.out.print(fileNodes[j].getId() + ": ");
                 for (int k = 0; k < fileNodes[j].getWays(); k++) {
@@ -293,6 +316,8 @@ public class Graph {
                     fileNodes[j].setConnAtIndex(k, fileNodes[tmpConn[j][k]]);
 
             this.nodes = fileNodes;
+            this.upper = upper;
+            this.lower = lower;
             in.close();
         } catch (IOException e) {
             e.printStackTrace();
