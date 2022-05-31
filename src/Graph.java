@@ -182,10 +182,6 @@ public class Graph {
         return value;
     }
 
-    public Node[] getNodes() {
-        return this.nodes;
-    }
-
     public double getLower() {
         return this.lower;
     }
@@ -245,7 +241,7 @@ public class Graph {
                 tmp += line.charAt(i);
                 i++;
             }
-            this.width = Integer.parseInt(tmp);
+            this.length = Integer.parseInt(tmp);
 
             while (line.charAt(i) == ' ') {
                 i++;
@@ -255,7 +251,7 @@ public class Graph {
                 tmp += line.charAt(i);
                 i++;
             }
-            this.length = Integer.parseInt(tmp);
+            this.width = Integer.parseInt(tmp);
 
             Node[] fileNodes = new Node[this.width * this.length];
             int[][] tmpConn = new int[this.width * this.length][4];
