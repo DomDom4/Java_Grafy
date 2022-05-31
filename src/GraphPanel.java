@@ -84,6 +84,7 @@ public class GraphPanel extends JPanel implements MouseListener {
         int nodeSize = determineNodeSize();
         int leftMargin = determineMargin(this.getWidth(), nodeSize, graph.getWidth());
         int upMargin = determineMargin(this.getHeight() - GRADIENT_HEIGHT, nodeSize, graph.getLength());
+        boolean tmp;
 
         makeNodeCircles(leftMargin, upMargin, nodeSize);
         drawEdges(g2d);
@@ -92,17 +93,20 @@ public class GraphPanel extends JPanel implements MouseListener {
             if(clickedNodes[0] == n || clickedNodes[1] == n)
                 g2d.setColor(Color.RED);
             else if(clickedNodes[0] != null && clickedNodes[1] != null) {
+                tmp = false;
                 for (Node node : path) {
                     if (node.getId() == n.id) {
                         g2d.setColor(Color.ORANGE);
+                        tmp = true;
                         break;
                     }
                 }
+                if(!tmp)
+                    g.setColor(new Color(36, 36, 45));
             } else
                 g.setColor(new Color(36, 36, 45));
 
             g2d.fillOval(n.x, n.y, n.diameter, n.diameter);
-            g.setColor(new Color(36, 36, 45));
         }
         drawGradient(g2d);
     }
