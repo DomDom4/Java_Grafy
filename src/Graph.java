@@ -33,11 +33,11 @@ public class Graph {
     public void printGraphToFile(String outFileName) {
         try {
             FileWriter out = new FileWriter(outFileName);
-            out.append(this.width + " " + this.length + "\n");
+            out.append(this.length + " " + this.width + "\n");
             for (int i = 0; i < this.nodes.length; i++) {
                 Node currentNode = nodes[i];
                 for (int j = 0; j < currentNode.getWays(); j++) {
-                    out.append("\t" + currentNode.getConnAtIndex(j).getId() + ": " + currentNode.getEdgeAtIndex(j));
+                    out.append(" " + currentNode.getConnAtIndex(j).getId() + " :" + currentNode.getEdgeAtIndex(j));
                 }
                 out.append("\n");
             }
