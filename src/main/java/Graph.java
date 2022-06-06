@@ -75,7 +75,6 @@ public class Graph {
         for (i = 0; i < this.nbOfGraphs - 1; i++) {
             while (wasDrawn(ww, i, (r = random.nextInt(this.width-1)))) { }//losowanie dopóki nie będzie węzła, którego jeszcze nie było
             ww[i] = r;
-            System.out.println(r+", ");
         }
 
         //Usuwanie połączeń węzłów
@@ -101,10 +100,10 @@ public class Graph {
             tmpi++;
         }
 
-        while (tmpe > this.width)
+        while (tmpe > this.width-1)
             tmpe -= this.width;
 
-        if(tmpe < tmpi-ngwidth-1 || tmpe > tmpi) {
+        if(tmpe < (tmpi-ngwidth+1) || tmpe > tmpi) {
             Node[] path = new Node[0];
             return path;
         }
