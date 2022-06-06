@@ -7,7 +7,6 @@ public class ParamFrame extends MethodFrame implements ActionListener {
     private static final int DEFAULT_WIDTH = 1100;
     private JButton generate;
     private JButton save;
-    private JButton integrity;
     private JTextField width;
     private JTextField length;
     private JTextField upper;
@@ -18,7 +17,6 @@ public class ParamFrame extends MethodFrame implements ActionListener {
         super(DEFAULT_WIDTH);
         generate = new JButton("Generate");
         save = new JButton("Save");
-        integrity = new JButton("BFS");
         width = new JTextField();
         length = new JTextField();
         upper = new JTextField();
@@ -35,8 +33,6 @@ public class ParamFrame extends MethodFrame implements ActionListener {
         upper.setPreferredSize(new Dimension(50, 25));
         nbOfGraphs.setText("1");
         nbOfGraphs.setPreferredSize(new Dimension(50, 25));
-        save.setEnabled(false);
-        integrity.setEnabled(false);
 
         generate.addActionListener(this);
         setButtonProperties(generate);
@@ -45,7 +41,6 @@ public class ParamFrame extends MethodFrame implements ActionListener {
         setButtonProperties(save);
 
         integrity.addActionListener(this);
-        setButtonProperties(integrity);
 
         back.addActionListener(this);
 
@@ -61,7 +56,6 @@ public class ParamFrame extends MethodFrame implements ActionListener {
         menu.add(nbOfGraphs);
 
         menu.add(generate);
-        menu.add(integrity);
         menu.add(save);
 
         this.setVisible(true);
@@ -132,11 +126,10 @@ public class ParamFrame extends MethodFrame implements ActionListener {
         graphPanel.setBackground(graphBackgroundColor);
         graphPanel.repaint();
 
+        menu.add(integrity);
         menu.add(delete);
 
-        integrity.setEnabled(true);
         save.setEnabled(true);
-        //generate.setEnabled(false);
 
         this.add(graphPanel);
         this.setSize(DEFAULT_WIDTH, graphPanel.getHeight() + 111);

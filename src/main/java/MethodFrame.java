@@ -10,6 +10,7 @@ public abstract class MethodFrame extends BasicColorsFrame {
     protected GraphPanel graphPanel;
     protected JButton delete;
     protected JButton back;
+    protected JButton integrity;
     protected Graph graph;
     protected JFileChooser actionFile;
 
@@ -17,6 +18,9 @@ public abstract class MethodFrame extends BasicColorsFrame {
         back = new JButton("<-Back");
         setButtonProperties(back);
         back.setAlignmentX(0);
+
+        integrity = new JButton("BFS");
+        setButtonProperties(integrity);
 
         backPanel = new JPanel();
         backPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
@@ -44,6 +48,7 @@ public abstract class MethodFrame extends BasicColorsFrame {
     protected void deleteGraph(int width) {
         menu.remove(delete);
         menu.setSize(width, MENU_HEIGHT);
+        menu.remove(integrity);
 
         backPanel.setSize(width, BACK_PANEL_HEIGHT);
 

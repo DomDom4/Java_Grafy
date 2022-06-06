@@ -24,6 +24,8 @@ public class FileFrame extends MethodFrame implements ActionListener {
         open.addActionListener(this);
         open.setEnabled(false);
 
+        integrity.addActionListener(this);
+
         back.addActionListener(this);
 
         menu.add(selectedFile);
@@ -47,6 +49,24 @@ public class FileFrame extends MethodFrame implements ActionListener {
                         "Error",
                         JOptionPane.DEFAULT_OPTION,
                         JOptionPane.ERROR_MESSAGE
+                );
+            }
+        } else if (e.getSource() == integrity) {
+            if (graph.checkIntegrity()) {
+                JOptionPane.showConfirmDialog(
+                        null,
+                        "Graph is connected",
+                        "Integrity",
+                        JOptionPane.DEFAULT_OPTION,
+                        JOptionPane.INFORMATION_MESSAGE
+                );
+            } else {
+                JOptionPane.showConfirmDialog(
+                        null,
+                        "Graph is not connected",
+                        "Integrity",
+                        JOptionPane.DEFAULT_OPTION,
+                        JOptionPane.INFORMATION_MESSAGE
                 );
             }
         } else if (e.getSource() == delete) {
@@ -74,11 +94,11 @@ public class FileFrame extends MethodFrame implements ActionListener {
                 delete.addActionListener(this);
             }
 
-
             graphPanel = new GraphPanel(graph);
             graphPanel.setBackground(graphBackgroundColor);
             graphPanel.repaint();
 
+            menu.add(integrity);
             menu.add(delete);
             menu.setSize(1100, 37);
 
