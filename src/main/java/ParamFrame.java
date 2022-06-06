@@ -24,15 +24,15 @@ public class ParamFrame extends MethodFrame implements ActionListener {
         nbOfGraphs = new JTextField();
 
         width.setText("3");
-        width.setPreferredSize(new Dimension(40, 25));
+        width.setPreferredSize(new Dimension(50, 25));
         length.setText("3");
-        length.setPreferredSize(new Dimension(40, 25));
+        length.setPreferredSize(new Dimension(50, 25));
         lower.setText("0");
-        lower.setPreferredSize(new Dimension(40, 25));
+        lower.setPreferredSize(new Dimension(50, 25));
         upper.setText("5");
-        upper.setPreferredSize(new Dimension(40, 25));
+        upper.setPreferredSize(new Dimension(50, 25));
         nbOfGraphs.setText("1");
-        nbOfGraphs.setPreferredSize(new Dimension(40, 25));
+        nbOfGraphs.setPreferredSize(new Dimension(50, 25));
 
         generate.addActionListener(this);
         setButtonProperties(generate);
