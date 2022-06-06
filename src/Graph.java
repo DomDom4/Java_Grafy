@@ -12,9 +12,8 @@ public class Graph {
     private double upper;
 
     /*Konstruktor generujący*/
-    public Graph(int width, int length, double upper, double lower) {
-        generateGraph(width, length, upper, lower);
-        this.nbOfGraphs = 1;
+    public Graph(int width, int length, double upper, double lower, int nbOfGraphs) {
+        generateGraph(width, length, upper, lower, nbOfGraphs);
         if (lower < upper) {
             this.lower = lower;
             this.upper = upper;
@@ -68,33 +67,27 @@ public class Graph {
     }
 
     public void divideGraph() {
-        if (this.nbOfGraphs > this.width)
-            System.out.println("Error");
-
         Random random = new Random();
-
         int i, j, r;
 
         int[] ww = new int[this.nbOfGraphs]; //tablica węzłów początkowych (width), których ścieżki mają być usunięte
 
         //Wpisywanie do tablic indeksów początkowych węzłów do dzielenia
         for (i = 0; i < this.nbOfGraphs - 1; i++) {
-            while (wasDrawn(ww, i, (r = random.nextInt(this.width)))) {
-            }//losowanie dopóki nie będzie węzła, którego jeszcze nie było
+            while (wasDrawn(ww, i, (r = random.nextInt(this.width-1)))) { }//losowanie dopóki nie będzie węzła, którego jeszcze nie było
             ww[i] = r;
+            System.out.println(r+", ");
         }
 
         //Usuwanie połączeń węzłów
         for (i = 0; i < this.nbOfGraphs - 1; i++) {
-            for (j = 0; j < this.length; j++) {
                 deleteConn(ww[i], 1);
                 deleteConn(ww[i] + 1, -1);
-            }
         }
     }
 
     public Node[] findPath(int start, int end) {
-        int tmpi = start;
+        int tmpi = start, tmpe = end;
 
         // potrzebne gdy graf jest podzielony
         while (tmpi > this.width - 1)
@@ -107,6 +100,14 @@ public class Graph {
         while (this.nodes[tmpi].getIndexOfConnection(tmpi + 1) != -1) {
             ngwidth++;
             tmpi++;
+        }
+
+        while (tmpe > this.width)
+            tmpe -= this.width;
+
+        if(tmpe < tmpi-ngwidth-1 || tmpe > tmpi) {
+            Node[] path = new Node[0];
+            return path;
         }
         // --
 
@@ -136,7 +137,7 @@ public class Graph {
             }
         }
 
-        double val_s = d[end]; // długość ścieżki
+        //double val_s = d[end]; // długość ścieżki
         Node[] temp = new Node[ngsize];
         int k = 0;
         temp[k] = this.nodes[end];
@@ -202,16 +203,20 @@ public class Graph {
         return this.nodes.length;
     }
 
-    private void generateGraph(int width, int length, double upper, double lower) {
+    private void generateGraph(int width, int length, double upper, double lower, int nbOfGraphs) {
         Node[] genNodes = new Node[width * length];
         for (int i = 0; i < length * width; i++) {
             int currentWays = determineWays(i, width, length);
             genNodes[i] = new Node(i, currentWays, new Node[currentWays], new double[currentWays]);
         }
         this.nodes = genNodes;
-        this.nbOfGraphs = 1;
+        this.nbOfGraphs = nbOfGraphs;
         this.width = width;
         this.length = length;
+
+        if(this.nbOfGraphs < 1 || this.nbOfGraphs > this.width)
+            this.nbOfGraphs = 1;
+
         if (upper < lower) {
             double temp = upper;
             upper = lower;
@@ -220,6 +225,8 @@ public class Graph {
         for (int i = 0; i < genNodes.length; i++) {
             fillRandomConnections(i, lower, upper);
         }
+
+        this.divideGraph();
     }
 
     private void readGraph(String inFile) throws NumberFormatException {
@@ -386,27 +393,29 @@ public class Graph {
     }
 
     private void deleteConn(int n, int i) {
-        Node tmpn = this.nodes[n];
-        int id = tmpn.getIndexOfConnection(n + i);
+        for(int p=0; p<this.length; p++) {
+            Node tmpn = this.nodes[n + p*this.width];
+            int id = tmpn.getIndexOfConnection(n + p*this.width + i);
 
-        if (id == -1)
-            System.out.println("Error");
+            if (id == -1)
+                System.out.println("Error");
 
-        Node[] tmpC = new Node[tmpn.getWays() - 1];
-        double[] tmpE = new double[tmpn.getWays() - 1];
+            Node[] tmpC = new Node[tmpn.getWays() - 1];
+            double[] tmpE = new double[tmpn.getWays() - 1];
 
-        int k = 0;
+            int k = 0;
 
-        for (int j = 0; j < tmpn.getWays(); j++) {
-            if (j != id) {
-                tmpC[k] = tmpn.getConnAtIndex(j);
-                tmpE[k] = tmpn.getEdgeAtIndex(j);
-                k++;
+            for (int j = 0; j < tmpn.getWays(); j++) {
+                if (j != id) {
+                    tmpC[k] = tmpn.getConnAtIndex(j);
+                    tmpE[k] = tmpn.getEdgeAtIndex(j);
+                    k++;
+                }
             }
+            tmpn.setConn(tmpC);
+            tmpn.setEdges(tmpE);
+            tmpn.setWays(tmpn.getWays() - 1);
         }
-        tmpn.setConn(tmpC);
-        tmpn.setEdges(tmpE);
-        tmpn.setWays(tmpn.getWays() - 1);
     }
 
     private LinkedList<Node> priorityQueue(int n) {
