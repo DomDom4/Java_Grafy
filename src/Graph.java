@@ -247,7 +247,7 @@ public class Graph {
                 i++;
             }
             tmp = "";
-            while (i < line.length()) {
+            while (i < line.length() && line.charAt(i) != ' '  && line.charAt(i) != '\t') {
                 tmp += line.charAt(i);
                 i++;
             }
@@ -290,6 +290,9 @@ public class Graph {
                     }
                     tmpEdges[ways] = Double.parseDouble(tmp);
                     ways++;
+
+                    while (i < line.length() && (line.charAt(i) == ' '  || line.charAt(i) == '\t'))
+                        i++;
                 }
                 fileNodes[j] = new Node(j, ways, new Node[ways], new double[ways]);
 

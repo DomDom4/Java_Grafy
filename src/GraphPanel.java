@@ -153,7 +153,7 @@ public class GraphPanel extends JPanel implements MouseListener {
             double downVal = graph.getDownValue(i);
             if (rightVal != -1) {
                 if(isPathR)
-                    g.setColor(Color.WHITE);
+                        g.setColor(Color.BLUE);
                 else
                     g.setColor(getEdgeColor(lowerBound, upperBound, rightVal));
                 g.drawLine(
@@ -165,7 +165,7 @@ public class GraphPanel extends JPanel implements MouseListener {
             }
             if (downVal != -1) {
                 if(isPathD)
-                    g.setColor(Color.WHITE);
+                    g.setColor(Color.BLUE);
                 else
                     g.setColor(getEdgeColor(lowerBound, upperBound, downVal));
                 g.drawLine(
