@@ -1,6 +1,5 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
@@ -42,21 +41,22 @@ public class GraphPanel extends JPanel implements MouseListener {
         NodeCircle tmpn = null;
 
         for (NodeCircle n : nodes) {
-            if(x > n.x && x < n.x + n.diameter && y > n.y && y < n.y + n.diameter)
+            if (x > n.x && x < n.x + n.diameter && y > n.y && y < n.y + n.diameter)
                 tmpn = n;
         }
 
-        if(clickedNodes[0] == tmpn)
+        if (clickedNodes[0] == tmpn)
             clickedNodes[0] = null;
-        else if(clickedNodes[1] == tmpn)
+        else if (clickedNodes[1] == tmpn)
             clickedNodes[1] = null;
-        else if(clickedNodes[0] == null)
+        else if (clickedNodes[0] == null)
             clickedNodes[0] = tmpn;
-        else if(clickedNodes[1] == null)
+        else if (clickedNodes[1] == null)
             clickedNodes[1] = tmpn;
 
         repaint();
     }
+
     @Override
     public void mousePressed(MouseEvent e) {
 
@@ -90,9 +90,9 @@ public class GraphPanel extends JPanel implements MouseListener {
         drawEdges(g2d);
 
         for (NodeCircle n : nodes) {
-            if(clickedNodes[0] == n || clickedNodes[1] == n)
+            if (clickedNodes[0] == n || clickedNodes[1] == n)
                 g2d.setColor(Color.RED);
-            else if(clickedNodes[0] != null && clickedNodes[1] != null) {
+            else if (clickedNodes[0] != null && clickedNodes[1] != null) {
                 tmp = false;
                 for (Node node : path) {
                     if (node.getId() == n.id) {
@@ -101,7 +101,7 @@ public class GraphPanel extends JPanel implements MouseListener {
                         break;
                     }
                 }
-                if(!tmp)
+                if (!tmp)
                     g.setColor(new Color(36, 36, 45));
             } else
                 g.setColor(new Color(36, 36, 45));
@@ -117,7 +117,7 @@ public class GraphPanel extends JPanel implements MouseListener {
         double lowerBound = this.graph.getLower();
         double upperBound = this.graph.getUpper();
         boolean isPath = false, isPathR, isPathD;
-        if(clickedNodes[0] != null && clickedNodes[1] != null) {
+        if (clickedNodes[0] != null && clickedNodes[1] != null) {
             path = graph.findPath(clickedNodes[0].id, clickedNodes[1].id);
             if(path.length > 0)
                 isPath = true;
@@ -137,21 +137,21 @@ public class GraphPanel extends JPanel implements MouseListener {
             int j = 0;
             isPathR = false;
             isPathD = false;
-            while(isPath && j<path.length) {
-                if(path[j].getId() == i) {
-                    if(j != 0) {
-                        if(path[j].getId() + 1 == path[j-1].getId()) {
+            while (isPath && j < path.length) {
+                if (path[j].getId() == i) {
+                    if (j != 0) {
+                        if (path[j].getId() + 1 == path[j - 1].getId()) {
                             isPathR = true;
                         }
-                        if(path[j].getId() + graph.getWidth() == path[j-1].getId()) {
+                        if (path[j].getId() + graph.getWidth() == path[j - 1].getId()) {
                             isPathD = true;
                         }
                     }
-                    if(j != path.length-1) {
+                    if (j != path.length - 1) {
                         if (path[j].getId() + 1 == path[j + 1].getId()) {
                             isPathR = true;
                         }
-                        if(path[j].getId() + graph.getWidth() == path[j+1].getId()) {
+                        if (path[j].getId() + graph.getWidth() == path[j + 1].getId()) {
                             isPathD = true;
                         }
                     }
@@ -265,7 +265,7 @@ public class GraphPanel extends JPanel implements MouseListener {
     }
 
     private void makeNodeCircles(int leftMargin, int upMargin, int nodeSize) {
-        if(nodes.isEmpty()) {
+        if (nodes.isEmpty()) {
             int heightController = 0;
             for (int i = 0; i < graph.getLength(); i++) {
                 int widthController = 0;

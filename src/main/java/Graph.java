@@ -1,5 +1,4 @@
 import java.io.*;
-import java.lang.String;
 import java.util.LinkedList;
 import java.util.Random;
 
