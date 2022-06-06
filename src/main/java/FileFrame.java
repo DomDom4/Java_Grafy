@@ -7,6 +7,7 @@ public class FileFrame extends MethodFrame implements ActionListener {
     private static final int GRAPH_WIDTH = 1100;
     private JButton open;
     private JButton select;
+    private JButton integrity;
     private JLabel selectedFile;
 
     public FileFrame() {
@@ -24,13 +25,17 @@ public class FileFrame extends MethodFrame implements ActionListener {
         open.addActionListener(this);
         open.setEnabled(false);
 
+        integrity = new JButton("BFS");
+        setButtonProperties(integrity);
         integrity.addActionListener(this);
+        integrity.setEnabled(false);
 
         back.addActionListener(this);
 
         menu.add(selectedFile);
         menu.add(select);
         menu.add(open);
+        menu.add(integrity);
 
         this.setVisible(true);
     }
@@ -88,6 +93,7 @@ public class FileFrame extends MethodFrame implements ActionListener {
     private void showGraphPanel() throws NumberFormatException {
         if (actionFile.getSelectedFile().exists()) {
             graph = new Graph(actionFile.getSelectedFile().getAbsolutePath());
+            integrity.setEnabled(true);
             if (delete == null) {
                 delete = new JButton("Delete");
                 setButtonProperties(delete);
