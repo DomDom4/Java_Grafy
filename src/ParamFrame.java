@@ -7,35 +7,45 @@ public class ParamFrame extends MethodFrame implements ActionListener {
     private static final int DEFAULT_WIDTH = 1100;
     private JButton generate;
     private JButton save;
+    private JButton integrity;
     private JTextField width;
     private JTextField length;
     private JTextField upper;
     private JTextField lower;
+    private JTextField nbOfGraphs;
 
     public ParamFrame() {
         super(DEFAULT_WIDTH);
         generate = new JButton("Generate");
         save = new JButton("Save");
+        integrity = new JButton("BFS");
         width = new JTextField();
         length = new JTextField();
         upper = new JTextField();
         lower = new JTextField();
+        nbOfGraphs = new JTextField();
 
         width.setText("3");
-        width.setPreferredSize(new Dimension(100, 25));
+        width.setPreferredSize(new Dimension(50, 25));
         length.setText("3");
-        length.setPreferredSize(new Dimension(100, 25));
+        length.setPreferredSize(new Dimension(50, 25));
         lower.setText("0");
-        lower.setPreferredSize(new Dimension(100, 25));
+        lower.setPreferredSize(new Dimension(50, 25));
         upper.setText("5");
-        upper.setPreferredSize(new Dimension(100, 25));
+        upper.setPreferredSize(new Dimension(50, 25));
+        nbOfGraphs.setText("1");
+        nbOfGraphs.setPreferredSize(new Dimension(50, 25));
         save.setEnabled(false);
+        integrity.setEnabled(false);
 
         generate.addActionListener(this);
         setButtonProperties(generate);
 
         save.addActionListener(this);
         setButtonProperties(save);
+
+        integrity.addActionListener(this);
+        setButtonProperties(integrity);
 
         back.addActionListener(this);
 
@@ -47,8 +57,11 @@ public class ParamFrame extends MethodFrame implements ActionListener {
         menu.add(lower);
         addLabel(menu, "Upper range limit:");
         menu.add(upper);
+        addLabel(menu, "Nb of graphs:");
+        menu.add(nbOfGraphs);
 
         menu.add(generate);
+        menu.add(integrity);
         menu.add(save);
 
         this.setVisible(true);
@@ -71,6 +84,24 @@ public class ParamFrame extends MethodFrame implements ActionListener {
                 );
             }
             save.setEnabled(true);
+        } else if (e.getSource() == integrity) {
+            if(graph.checkIntegrity()) {
+                JOptionPane.showConfirmDialog(
+                        null,
+                        "Graph is connected",
+                        "Integrity",
+                        JOptionPane.DEFAULT_OPTION,
+                        JOptionPane.INFORMATION_MESSAGE
+                );
+            } else {
+                JOptionPane.showConfirmDialog(
+                        null,
+                        "Graph is not connected",
+                        "Integrity",
+                        JOptionPane.DEFAULT_OPTION,
+                        JOptionPane.INFORMATION_MESSAGE
+                );
+            }
         } else if (e.getSource() == save) {
             saveGraph();
         } else if (e.getSource() == delete) {
@@ -87,7 +118,8 @@ public class ParamFrame extends MethodFrame implements ActionListener {
                 Integer.parseInt(width.getText()),
                 Integer.parseInt(length.getText()),
                 Double.parseDouble(upper.getText()),
-                Double.parseDouble(lower.getText())
+                Double.parseDouble(lower.getText()),
+                Integer.parseInt(nbOfGraphs.getText())
         );
 
         if (delete == null) {
@@ -102,6 +134,7 @@ public class ParamFrame extends MethodFrame implements ActionListener {
 
         menu.add(delete);
 
+        integrity.setEnabled(true);
         save.setEnabled(true);
         //generate.setEnabled(false);
 
