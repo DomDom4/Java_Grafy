@@ -12,7 +12,6 @@ public class Graph {
 
     /*Konstruktor generujący*/
     public Graph(int width, int length, double upper, double lower, int nbOfGraphs) {
-        generateGraph(width, length, upper, lower, nbOfGraphs);
         if (lower < upper) {
             this.lower = lower;
             this.upper = upper;
@@ -20,6 +19,7 @@ public class Graph {
             this.upper = lower;
             this.lower = upper;
         }
+        generateGraph(width, length, upper, lower, nbOfGraphs);
     }
 
     /*Konstruktor czytający*/
@@ -28,6 +28,11 @@ public class Graph {
         readGraph(inFile);
     }
 
+    /**
+     * Zapisuje wygenerowany graf do podanego pliku.
+     *
+     * @param outFileName plik, do którego ma zostać zapisany graf
+     */
     public void printGraphToFile(String outFileName) {
         try {
             FileWriter out = new FileWriter(outFileName);
@@ -44,6 +49,11 @@ public class Graph {
         }
     }
 
+    /**
+     * Sprawdza czy graf jest spójny.
+     *
+     * @return false jeżeli nie jest spójny, true jeżeli jest
+     */
     public boolean checkIntegrity() {
         Node current = nodes[0];
         LinkedList<Node> working = new LinkedList<>();
@@ -62,30 +72,40 @@ public class Graph {
         return checked.size() == this.nodes.length;
     }
 
-    /**Metoda dzieląca graf*/
+    /**
+     * Dzieli graf na kilka grafów niespójnych.
+     */
     public void divideGraph() {
         Random random = new Random();
         int i, r;
 
-        int[] ww = new int[this.nbOfGraphs]; /**Utworzenie tablicy z numerami kolumn, których węzły mają mieć usunięte ścieżki (po prawej stronie)*/
+        int[] ww = new int[this.nbOfGraphs];
 
-        /**Wpisywanie do tablicy losowych indeksów węzłów*/
+
         for (i = 0; i < this.nbOfGraphs - 1; i++) {
-            while (wasDrawn(ww, i, (r = random.nextInt(this.width-1)))) { }//losowanie dopóki nie będzie węzła, którego jeszcze nie było
+            while (wasDrawn(ww, i, (r = random.nextInt(this.width - 1)))) {
+            }//losowanie dopóki nie będzie węzła, którego jeszcze nie było
             ww[i] = r;
         }
 
-        /**Usuwanie połączeń między dwoma sąsiednimi węzłami*/
+
         for (i = 0; i < this.nbOfGraphs - 1; i++) {
-                deleteConn(ww[i], 1);
-                deleteConn(ww[i] + 1, -1);
+            deleteConn(ww[i], 1);
+            deleteConn(ww[i] + 1, -1);
         }
     }
 
+    /**
+     * Szuka najkrótszej możliwej ścieżki między zadanymi węzłami.
+     *
+     * @param start miejsce rozpączęcia szukania
+     * @param end   miejsce docelowe, do którego wyznaczamy ścieżkę
+     * @return Najkrótsza możliwa ścieżka
+     */
     public Node[] findPath(int start, int end) {
         int tmpi = start, tmpe = end;
 
-        /**Znalezienie szerokości grafu (przydatne, gdy graf jest podzielony*/
+
         while (tmpi > this.width - 1)
             tmpi -= this.width;
 
@@ -98,24 +118,24 @@ public class Graph {
             tmpi++;
         }
 
-        while (tmpe > this.width-1)
+        while (tmpe > this.width - 1)
             tmpe -= this.width;
 
-        /**Gdy węzły ścieżki są w różnych grafach*/
-        if(tmpe < (tmpi-ngwidth+1) || tmpe > tmpi) {
+
+        if (tmpe < (tmpi - ngwidth + 1) || tmpe > tmpi) {
             return new Node[0];
         }
 
         int gsize = this.width * this.length;
 
         int ngsize = ngwidth * this.length;
-        /**Stworzenie kolejki priorytetowej*/
+
         LinkedList<Node> Q = priorityQueue(start);
 
         double[] d = new double[gsize];
         Node[] p = new Node[gsize];
 
-        /**Przypisanie tablicom przechowującym najmniejsze wartości ścieżki i poprzedniki nieskończoności i wartości null*/
+
         for (int i = 0; i < gsize; i++) {
             d[i] = Double.POSITIVE_INFINITY;
             p[i] = null;
@@ -124,7 +144,7 @@ public class Graph {
         d[start] = 0;
         Node c;
 
-        /**Znajdowanie najkrótszych połączeń kolejnych węzłów z kolejki*/
+
         while (!Q.isEmpty()) {
             c = Q.poll();
             for (int i = 0; i < c.getWays(); i++) {
@@ -135,7 +155,7 @@ public class Graph {
             }
         }
 
-        /**Wpisanie kolejnych węzłów najkrótszej ścieżki do tablicy*/
+
         Node[] temp = new Node[ngsize];
         int k = 0;
         temp[k] = this.nodes[end];
@@ -149,7 +169,7 @@ public class Graph {
 
         Node[] path = new Node[k];
 
-        /**Przepisanie kolejnych węzłów najkrótszej ścieżki do tablicy, w poprawnej kolejności*/
+
         for (int i = 0; i < k; i++) {
             path[i] = temp[k - i - 1];
         }
@@ -157,17 +177,29 @@ public class Graph {
         return path;
     }
 
+    /**
+     * Znajduje wagę krawędzi w prawą stronę od podanego węzła.
+     *
+     * @param index węzęł, którego połączenia szukamy
+     * @return Waga ścieżki w prawo
+     */
     public double getRightValue(int index) {
-        double value = -1;
+        double pathToRight = -1;
         if (width != 1)
             for (int i = 0; i < this.nodes[index].getWays(); i++)
                 if (index + 1 == this.nodes[index].getConnAtIndex(i).getId()) {
-                    value = this.nodes[index].getEdgeAtIndex(i);
+                    pathToRight = this.nodes[index].getEdgeAtIndex(i);
                     break;
                 }
-        return value;
+        return pathToRight;
     }
 
+    /**
+     * Znajduje wagę krawędzi w dół od podanego węzła.
+     *
+     * @param index węzęł, którego połączenia szukamy
+     * @return Waga ścieżki w dół
+     */
     public double getDownValue(int index) {
         double value = -1;
         if (length != 1)
@@ -199,33 +231,42 @@ public class Graph {
         return this.nodes.length;
     }
 
+    /**
+     * Generuje graf na podstawie podanych parametrów
+     *
+     * @param width      szerokość grafu
+     * @param length     wysokość grafu
+     * @param upper      górny koniec przedziału, z którego są losowane wagi ścieżek
+     * @param lower      dolny koniec przedziału, z którego są losowane wagi ścieżek
+     * @param nbOfGraphs liczba grafów, na które ma zostać podzielny graf spójny
+     */
     private void generateGraph(int width, int length, double upper, double lower, int nbOfGraphs) {
         Node[] genNodes = new Node[width * length];
+        this.width = width;
+        this.length = length;
+
         for (int i = 0; i < length * width; i++) {
-            int currentWays = determineWays(i, width, length);
+            int currentWays = determineWays(i);
             genNodes[i] = new Node(i, currentWays, new Node[currentWays], new double[currentWays]);
         }
         this.nodes = genNodes;
         this.nbOfGraphs = nbOfGraphs;
-        this.width = width;
-        this.length = length;
 
-        if(this.nbOfGraphs < 1 || this.nbOfGraphs > this.width)
+        if (this.nbOfGraphs < 1 || this.nbOfGraphs > this.width)
             this.nbOfGraphs = 1;
 
-        if (upper < lower) {
-            double temp = upper;
-            upper = lower;
-            lower = temp;
-        }
         for (int i = 0; i < genNodes.length; i++) {
-            fillRandomConnections(i, lower, upper);
+            fillRandomConnections(i);
         }
 
         this.divideGraph();
     }
 
-    /**Metoda wczytywania garfu z pliku*/
+    /**
+     * Wczytuje graf z pliku
+     *
+     * @param inFile plik, z którego ma zostać wczytany graf
+     */
     private void readGraph(String inFile) throws NumberFormatException {
         try {
             File file = new File(inFile);
@@ -234,11 +275,9 @@ public class Graph {
             String line = null;
             StringBuilder tmp = null;
 
-            /**Wczytanie pierwszej linii*/
             line = in.readLine();
             int i = 0;
 
-            /**Wydzielenie i zapisanie długości grafu*/
             while (line.charAt(i) == ' ') {
                 i++;
             }
@@ -249,12 +288,11 @@ public class Graph {
             }
             this.length = Integer.parseInt(tmp.toString());
 
-            /**Wydzielenie i zapisanie szerokości grafu*/
             while (line.charAt(i) == ' ') {
                 i++;
             }
             tmp = new StringBuilder();
-            while (i < line.length() && line.charAt(i) != ' '  && line.charAt(i) != '\t') {
+            while (i < line.length() && line.charAt(i) != ' ' && line.charAt(i) != '\t') {
                 tmp.append(line.charAt(i));
                 i++;
             }
@@ -266,13 +304,11 @@ public class Graph {
             double lower = Double.POSITIVE_INFINITY;
             double upper = 0;
 
-            /**Wczytywanie kolejnych linii pliku*/
             for (int j = 0; j < this.width * this.length; j++) {
                 int ways = 0;
                 i = 0;
                 line = in.readLine();
 
-                /**Wydzielenie i zapisanie id węzła*/
                 while (i < line.length()) {
                     tmp = new StringBuilder();
                     while (line.charAt(i) == ' ' || line.charAt(i) == '\t') {
@@ -290,7 +326,6 @@ public class Graph {
                     }
                     i++;
                     tmp = new StringBuilder();
-                    /**Wydzielenie i zapisanie wartości połączenia do danego węzła węzła*/
                     while (i < line.length() && line.charAt(i) != ' ') {
                         if (line.charAt(i) == ',')
                             tmp.append('.');
@@ -301,22 +336,21 @@ public class Graph {
                     tmpEdges[ways] = Double.parseDouble(tmp.toString());
                     ways++;
 
-                    while (i < line.length() && (line.charAt(i) == ' '  || line.charAt(i) == '\t'))
+                    while (i < line.length() && (line.charAt(i) == ' ' || line.charAt(i) == '\t'))
                         i++;
                 }
                 fileNodes[j] = new Node(j, ways, new Node[ways], new double[ways]);
 
-                /**Przypisanie wartości połączeń do węzła*/
                 for (int k = 0; k < ways; k++) {
                     fileNodes[j].setEdgeAtIndex(k, tmpEdges[k]);
-                    /**Znalezienie najmniejszej i największej wartości przejść*/
+
                     if (tmpEdges[k] < lower)
                         lower = tmpEdges[k];
                     if (tmpEdges[k] > upper)
                         upper = tmpEdges[k];
                 }
             }
-            /**Przypisanie połączeń do węzła*/
+
             for (int j = 0; j < this.width * this.length; j++)
                 for (int k = 0; k < fileNodes[j].getWays(); k++)
                     fileNodes[j].setConnAtIndex(k, fileNodes[tmpConn[j][k]]);
@@ -330,7 +364,13 @@ public class Graph {
         }
     }
 
-    private int determineWays(int id, int width, int length) {
+    /**
+     * Na podstawie informacji o grafie określa ile połączeń powinien mieć podany węzęł
+     *
+     * @param id identyfikator podanego węzła
+     * @return ilość połączeń dla podanego węzła
+     */
+    private int determineWays(int id) {
         int ways;
         if (width == 1 && length == 1)
             ways = 0;
@@ -350,7 +390,12 @@ public class Graph {
         return ways;
     }
 
-    private void fillRandomConnections(int current, double lower, double upper) {
+    /**
+     * Losuje wagi krawędzi wychodzących z podanego węzła oraz przypisuje je w obie strony
+     *
+     * @param current węzęł dla którego losujemy krawędzie
+     */
+    private void fillRandomConnections(int current) {
         Random random = new Random();
         Node currentNode = this.nodes[current];
         int right = currentNode.getId() + 1;
@@ -384,7 +429,14 @@ public class Graph {
         }
     }
 
-    /**Metoda sprawdzająca czy numer kolumny został już wcześniej wylosowany*/
+    /**
+     * Sprawdza czy numer kolumny został już wcześniej wylosowany
+     *
+     * @param ww ???
+     * @param n  ???
+     * @param r  ???
+     * @return wartość logiczną odpowiadającą na pytanie
+     */
     private boolean wasDrawn(int[] ww, int n, int r) {
         for (int i = 0; i < n; i++) {
             if (ww[i] == r)
@@ -393,18 +445,22 @@ public class Graph {
         return false;
     }
 
-    /**Metoda usuwająca połączenie węzła*/
+    /**
+     * Usuwa połączenie węzła
+     *
+     * @param n ???
+     * @param i ???
+     */
     private void deleteConn(int n, int i) {
-        for(int p=0; p<this.length; p++) {
-            Node tmpn = this.nodes[n + p*this.width];
-            int id = tmpn.getIndexOfConnection(n + p*this.width + i);
+        for (int p = 0; p < this.length; p++) {
+            Node tmpn = this.nodes[n + p * this.width];
+            int id = tmpn.getIndexOfConnection(n + p * this.width + i);
 
             Node[] tmpC = new Node[tmpn.getWays() - 1];
             double[] tmpE = new double[tmpn.getWays() - 1];
 
             int k = 0;
-
-            /**Zapisywanie do tablic pomocniczych połączeń i wartości połączeń do pozostałych węzłów*/
+            
             for (int j = 0; j < tmpn.getWays(); j++) {
                 if (j != id) {
                     tmpC[k] = tmpn.getConnAtIndex(j);
@@ -418,7 +474,12 @@ public class Graph {
         }
     }
 
-    /**Metoda tworząca kolejkę priorytetową, zaczynając od węzła startowego*/
+    /**
+     * Tworzy kolejkę priorytetową, zaczynając od węzła startowego
+     *
+     * @param n ????
+     * @return ?????
+     */
     private LinkedList<Node> priorityQueue(int n) {
         Node current = this.nodes[n];
         LinkedList<Node> working = new LinkedList<>();
