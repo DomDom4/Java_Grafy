@@ -101,8 +101,8 @@ public class Graph {
 
 
         for (i = 0; i < this.nbOfGraphs - 1; i++) {
-            while (wasDrawn(ww, i, (r = random.nextInt(this.width - 1)))) {
-            }//losowanie dopóki nie będzie węzła, którego jeszcze nie było
+            while (wasDrawn(ww, (r = random.nextInt(this.width - 1)))) {
+            }
             ww[i] = r;
         }
 
@@ -450,13 +450,12 @@ public class Graph {
     /**
      * Sprawdza czy numer kolumny został już wcześniej wylosowany
      *
-     * @param ww ???
-     * @param n  ???
-     * @param r  ???
+     * @param ww tablica z wartościami int (zawierająca numery wierzchołków)
+     * @param r  liczba, którą sprawdzamy czy jest zapisana w tablicy
      * @return wartość logiczną odpowiadającą na pytanie
      */
-    private boolean wasDrawn(int[] ww, int n, int r) {
-        for (int i = 0; i < n; i++) {
+    private boolean wasDrawn(int[] ww, int r) {
+        for (int i = 0; i < ww.length; i++) {
             if (ww[i] == r)
                 return true;
         }
@@ -466,8 +465,8 @@ public class Graph {
     /**
      * Usuwa połączenie węzła
      *
-     * @param n ???
-     * @param i ???
+     * @param n numer węzła, którego połączenie ma być usunięte
+     * @param i liczba, po dodaniu której do n, otrzymujemy numer węzła, do którego ma być usunięte połączenie
      */
     private void deleteConn(int n, int i) {
         for (int p = 0; p < this.length; p++) {
@@ -495,24 +494,24 @@ public class Graph {
     /**
      * Tworzy kolejkę priorytetową, zaczynając od węzła startowego
      *
-     * @param n ????
-     * @return ?????
+     * @param n id węzła, od którego ma zaczynać się kolejka priorytetowa
+     * @return lista - kolejka priorytetowa z wszystkimi węzłami danego grafu, rozpoczynająca się od węzła o id=n
      */
     private LinkedList<Node> priorityQueue(int n) {
         Node current = this.nodes[n];
         LinkedList<Node> working = new LinkedList<>();
-        LinkedList<Node> checked = new LinkedList<>();
+        LinkedList<Node> pq = new LinkedList<>();
         working.add(current);
 
         while (!working.isEmpty()) {
             for (Node node : current.getConn()) {
-                if (!working.contains(node) && !checked.contains(node))
+                if (!working.contains(node) && !pq.contains(node))
                     working.add(node);
             }
-            checked.add(working.poll());
+            pq.add(working.poll());
             current = working.peek();
         }
 
-        return checked;
+        return pq;
     }
 }
