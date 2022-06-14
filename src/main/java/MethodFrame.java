@@ -45,6 +45,10 @@ public abstract class MethodFrame extends BasicColorsFrame {
         actionFile = new JFileChooser();
     }
 
+    /**
+     * Usuwa panel zawierający graf z okna oraz przywraca mu pierwotny rozmiar.
+     * @param width szerokość danego okna bez grafu
+     */
     protected void deleteGraph(int width) {
         menu.remove(delete);
         menu.setSize(width, MENU_HEIGHT);

@@ -5,9 +5,13 @@ import java.awt.event.ActionListener;
 public class FileFrame extends MethodFrame implements ActionListener {
     private static final int DEFAULT_WIDTH = 400;
     private static final int GRAPH_WIDTH = 1100;
+    /**Powoduje wczytanie grafu z wybranego pliku*/
     private JButton open;
+    /**Otwiera okno dialogowe do wybrania pliku*/
     private JButton select;
+    /**Sprawdza spójność grafu po kliknięciu*/
     private JButton integrity;
+    /**Informuje o stanie wybrania pliku*/
     private JLabel selectedFile;
 
     public FileFrame() {
@@ -82,6 +86,9 @@ public class FileFrame extends MethodFrame implements ActionListener {
         }
     }
 
+    /**
+     * Obsługuje wybieranie pliku do wczytania grafu.
+     */
     private void selectFile() {
         if (actionFile.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
             selectedFile.setText("Selected file: " + actionFile.getSelectedFile().getName());
@@ -90,6 +97,9 @@ public class FileFrame extends MethodFrame implements ActionListener {
         }
     }
 
+    /**
+     * Sprawia ze panel z grafem jest widoczny w aplikacji.
+     */
     private void showGraphPanel() throws NumberFormatException {
         if (actionFile.getSelectedFile().exists()) {
             graph = new Graph(actionFile.getSelectedFile().getAbsolutePath());

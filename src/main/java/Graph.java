@@ -3,14 +3,28 @@ import java.util.LinkedList;
 import java.util.Random;
 
 public class Graph {
+    /**Tablica węzłów grafu*/
     private Node[] nodes;
+    /**Ilość grafów, na które został podzielony graf oryginalny*/
     private int nbOfGraphs;
+    /**Wysokość grafu*/
     private int length;
+    /**Szerokość grafu*/
     private int width;
+    /**Dolny koniec przedziału, z którego są losowane wagi ścieżek*/
     private double lower;
+    /**Górny koniec przedziału, z którego są losowane wagi ścieżek*/
     private double upper;
 
-    /*Konstruktor generujący*/
+    /**
+     * Generuje graf na podstawie podanych parametrów.
+     *
+     * @param width      szerokość grafu
+     * @param length     wysokość grafu
+     * @param upper      dolny koniec przedziału, z którego są losowane wagi ścieżek
+     * @param lower      górny koniec przedziału, z którego są losowane wagi ścieżek
+     * @param nbOfGraphs ilość grafów na które ma zostać podzielony graf spójny
+     */
     public Graph(int width, int length, double upper, double lower, int nbOfGraphs) {
         if (lower < upper) {
             this.lower = lower;
@@ -22,7 +36,11 @@ public class Graph {
         generateGraph(width, length, upper, lower, nbOfGraphs);
     }
 
-    /*Konstruktor czytający*/
+    /**
+     * Wczytuje graf z podanego pliku.
+     *
+     * @param inFile plik zawierający graf
+     */
     public Graph(String inFile) throws NumberFormatException {
         this.nbOfGraphs = 1;
         readGraph(inFile);
@@ -460,7 +478,7 @@ public class Graph {
             double[] tmpE = new double[tmpn.getWays() - 1];
 
             int k = 0;
-            
+
             for (int j = 0; j < tmpn.getWays(); j++) {
                 if (j != id) {
                     tmpC[k] = tmpn.getConnAtIndex(j);

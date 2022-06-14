@@ -79,7 +79,7 @@ public class ParamFrame extends MethodFrame implements ActionListener {
             }
             save.setEnabled(true);
         } else if (e.getSource() == integrity) {
-            if(graph.checkIntegrity()) {
+            if (graph.checkIntegrity()) {
                 JOptionPane.showConfirmDialog(
                         null,
                         "Graph is connected",
@@ -107,6 +107,9 @@ public class ParamFrame extends MethodFrame implements ActionListener {
         }
     }
 
+    /**
+     * Sprawia ze panel z grafem jest widoczny w aplikacji.
+     */
     private void showGraphPanel() throws NumberFormatException {
         graph = new Graph(
                 Integer.parseInt(width.getText()),
@@ -136,6 +139,9 @@ public class ParamFrame extends MethodFrame implements ActionListener {
         this.setLocationRelativeTo(null);
     }
 
+    /**
+     * Zapisuje graf do wybranego przez użytkownika pliku oraz wyświetla informację o poprawnym zapisie.
+     */
     private void saveGraph() {
         if (actionFile.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
             graph.printGraphToFile(actionFile.getSelectedFile().getAbsolutePath());
@@ -149,6 +155,11 @@ public class ParamFrame extends MethodFrame implements ActionListener {
         }
     }
 
+    /**
+     * Tworzy nowy obiekt JLabel zawierający podany tekst oraz dodaje go do podanego panelu.
+     * @param panel panel, który ma zawierać etykietę
+     * @param text napis, który ma zwierać etykieta
+     */
     private void addLabel(JPanel panel, String text) {
         JLabel newLabel = new JLabel(text);
         setLabelProperties(newLabel);

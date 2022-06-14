@@ -1,7 +1,11 @@
 public class Node {
+    /**Numer węzła*/
     private final int id;
+    /**Ilość połączeń wychodzących z węzła*/
     private int ways;
+    /**Węzły połączone z tym węzłem krawędziami*/
     private Node[] conn;
+    /**Wagi krawędzi odpowiadające indeksem węzłam, z którymi się łączą*/
     private double[] edges;
 
     public Node(int id, int ways, Node[] conn, double[] edges) {

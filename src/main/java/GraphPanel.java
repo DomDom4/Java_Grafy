@@ -11,8 +11,11 @@ public class GraphPanel extends JPanel implements MouseListener {
     private static final int DEFAULT_WIDTH = 1100;
     private static final int GRADIENT_HEIGHT = 30;
     Graph graph;
+    /**Zawiera informacje o położeniu oraz wielkości węzłów*/
     ArrayList<NodeCircle> nodes = new ArrayList<>();
+    /**Przechowuje informacje o klikniętych węzłach*/
     NodeCircle[] clickedNodes = new NodeCircle[2];
+    /**Znaleziona najkrótsza możliwa ścieżka*/
     Node[] path = new Node[0];
 
     public GraphPanel(Graph graph) {
@@ -36,18 +39,15 @@ public class GraphPanel extends JPanel implements MouseListener {
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        /**Przypisanie współżędnych kliknięcia*/
         int x = e.getX();
         int y = e.getY();
         NodeCircle tmpn = null;
 
-        /**Znalezienie węzła, który został kliknięty*/
         for (NodeCircle n : nodes) {
             if (x > n.x && x < n.x + n.diameter && y > n.y && y < n.y + n.diameter)
                 tmpn = n;
         }
 
-        /**Zapisanie węzła do tablicy, jeżeli jeszcze nie zostały wybrane dwa inne*/
         if (clickedNodes[0] == tmpn)
             clickedNodes[0] = null;
         else if (clickedNodes[1] == tmpn)
@@ -94,10 +94,10 @@ public class GraphPanel extends JPanel implements MouseListener {
 
         for (NodeCircle n : nodes) {
             if (clickedNodes[0] == n || clickedNodes[1] == n)
-                /**Zmiana koloru danego węzła na czerwony, jeżeli został kliknięty*/
+
                 g2d.setColor(Color.RED);
             else if (clickedNodes[0] != null && clickedNodes[1] != null) {
-                /**Zmiana koloru danego węzła na pomarańczowy, jeżeli nie został wybrany, ale należy do ścieżki*/
+
                 tmp = false;
                 for (Node node : path) {
                     if (node.getId() == n.id) {
@@ -116,16 +116,21 @@ public class GraphPanel extends JPanel implements MouseListener {
         drawGradient(g2d);
     }
 
+    /**
+     * Rysuje krawędzie grafu z odpowiednimi kolorami.
+     *
+     * @param g obiekt umożliwiający rysowanie
+     */
     private void drawEdges(Graphics2D g) {
         int nbOfNodes = graph.getNbOfNodes();
         int size = nodes.get(0).diameter;
         double lowerBound = this.graph.getLower();
         double upperBound = this.graph.getUpper();
         boolean isPath = false, isPathR, isPathD;
-        /**Sprawdzenie czy zostały wybrane dwa węzły oraz czy istnieje ścieżka pomiędzy nimi*/
+
         if (clickedNodes[0] != null && clickedNodes[1] != null) {
             path = graph.findPath(clickedNodes[0].id, clickedNodes[1].id);
-            if(path.length > 0)
+            if (path.length > 0)
                 isPath = true;
             /*else {
                 isPath = false;
@@ -144,7 +149,7 @@ public class GraphPanel extends JPanel implements MouseListener {
             int j = 0;
             isPathR = false;
             isPathD = false;
-            /**Sprawdzenie czy prawe lub dolne połączenie jest ścieżką*/
+
             while (isPath && j < path.length) {
                 if (path[j].getId() == i) {
                     if (j != 0) {
@@ -170,9 +175,9 @@ public class GraphPanel extends JPanel implements MouseListener {
             double rightVal = graph.getRightValue(i);
             double downVal = graph.getDownValue(i);
             if (rightVal != -1) {
-                /**Ustawienie koloru połączenia zależnie od tego czy prawe połączenie jest częścią ścieżki*/
-                if(isPathR)
-                        g.setColor(Color.BLUE);
+
+                if (isPathR)
+                    g.setColor(Color.BLUE);
                 else
                     g.setColor(getEdgeColor(lowerBound, upperBound, rightVal));
                 g.drawLine(
@@ -183,8 +188,8 @@ public class GraphPanel extends JPanel implements MouseListener {
                 );
             }
             if (downVal != -1) {
-                /**Ustawienie koloru połączenia zależnie od tego czy dolne połączenie jest częścią ścieżki*/
-                if(isPathD)
+
+                if (isPathD)
                     g.setColor(Color.BLUE);
                 else
                     g.setColor(getEdgeColor(lowerBound, upperBound, downVal));
@@ -198,6 +203,11 @@ public class GraphPanel extends JPanel implements MouseListener {
         }
     }
 
+    /**
+     * Odpowiada za pokazanie na dole ekranu gradientu z możliwymi kolorami przejść.
+     *
+     * @param g obiekt umożliwiający rysowanie
+     */
     private void drawGradient(Graphics2D g) {
         JLabel low = new JLabel("0.0");
         low.setLocation(0, this.getHeight() - GRADIENT_HEIGHT);
@@ -215,6 +225,14 @@ public class GraphPanel extends JPanel implements MouseListener {
         g.fillRect(0, this.getHeight() - GRADIENT_HEIGHT, DEFAULT_WIDTH, this.getHeight());
     }
 
+    /**
+     * Oblicza kolor gradientu na podstawie podanych wartości.
+     *
+     * @param lower dolny koniec przedziału możliwych wag krawędzi
+     * @param upper górny koniec przedziału możliwych wag krawędzi
+     * @param value waga krawędzi
+     * @return kolor gradientu w zależności od wagi krawędzi
+     */
     private Color getEdgeColor(double lower, double upper, double value) {
         int lightR = 255, lightG = 255, lightB = 204;
         int darkR = 212, darkG = 143, darkB = 93;
@@ -227,7 +245,11 @@ public class GraphPanel extends JPanel implements MouseListener {
         return new Color(redVal, greenVal, blueVal);
     }
 
-
+    /**
+     * Decyduje o wysokości okna na podstawie wielkości grafu.
+     *
+     * @return wysokość okna
+     */
     private int determineHeight() {
         int rows = graph.getLength() * 2 + 1;
         int height;
@@ -244,6 +266,11 @@ public class GraphPanel extends JPanel implements MouseListener {
         return height;
     }
 
+    /**
+     * Decyduje o wielkośći węzłów na podstawie wielkości grafu.
+     *
+     * @return Wielkość węzłów
+     */
     private int determineNodeSize() {
         int rows = graph.getLength() * 2 + 1;
         int cols = graph.getWidth() * 2 + 1;
@@ -263,10 +290,23 @@ public class GraphPanel extends JPanel implements MouseListener {
         return size;
     }
 
+    /**
+     * Oblicza marginesy tak aby graf był narysowany po środku ekranu.
+     *
+     * @param dimension             wartość wymiaru
+     * @param nodeSize              wielkość węzłów
+     * @param nbOfNodesPerDimension ilość węzłów na podany wymiar
+     * @return margines dla danego wymiaru
+     */
     private int determineMargin(int dimension, int nodeSize, int nbOfNodesPerDimension) {
         return (dimension - (nbOfNodesPerDimension * 2 - 1) * nodeSize) / 2;
     }
 
+    /**
+     * Sprawdza czy graf jest zbyt duży aby go narysować.
+     *
+     * @return true jeżeli jest, false jeżeli nie jest
+     */
     private boolean isTooBig() {
         boolean outcome = false;
         if ((graph.getWidth() * 2 + 1) * MIN_DIAMETER > DEFAULT_WIDTH || (graph.getLength() * 2 + 1) * MIN_DIAMETER > MAX_HEIGHT)
@@ -274,6 +314,13 @@ public class GraphPanel extends JPanel implements MouseListener {
         return outcome;
     }
 
+    /**
+     * Dodaje informacje o kółkach reprezentujących węzły - ich wielkość, id, oraz odległość od boku oraz  góry ekranu.
+     *
+     * @param leftMargin margines boczny lewy całego grafu
+     * @param upMargin   margines górny całego grafu
+     * @param nodeSize   wielkość węzłów
+     */
     private void makeNodeCircles(int leftMargin, int upMargin, int nodeSize) {
         if (nodes.isEmpty()) {
             int heightController = 0;
