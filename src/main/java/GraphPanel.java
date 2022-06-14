@@ -36,15 +36,18 @@ public class GraphPanel extends JPanel implements MouseListener {
 
     @Override
     public void mouseClicked(MouseEvent e) {
+        /**Przypisanie współżędnych kliknięcia*/
         int x = e.getX();
         int y = e.getY();
         NodeCircle tmpn = null;
 
+        /**Znalezienie węzła, który został kliknięty*/
         for (NodeCircle n : nodes) {
             if (x > n.x && x < n.x + n.diameter && y > n.y && y < n.y + n.diameter)
                 tmpn = n;
         }
 
+        /**Zapisanie węzła do tablicy, jeżeli jeszcze nie zostały wybrane dwa inne*/
         if (clickedNodes[0] == tmpn)
             clickedNodes[0] = null;
         else if (clickedNodes[1] == tmpn)
@@ -91,8 +94,10 @@ public class GraphPanel extends JPanel implements MouseListener {
 
         for (NodeCircle n : nodes) {
             if (clickedNodes[0] == n || clickedNodes[1] == n)
+                /**Zmiana koloru danego węzła na czerwony, jeżeli został kliknięty*/
                 g2d.setColor(Color.RED);
             else if (clickedNodes[0] != null && clickedNodes[1] != null) {
+                /**Zmiana koloru danego węzła na pomarańczowy, jeżeli nie został wybrany, ale należy do ścieżki*/
                 tmp = false;
                 for (Node node : path) {
                     if (node.getId() == n.id) {
@@ -117,6 +122,7 @@ public class GraphPanel extends JPanel implements MouseListener {
         double lowerBound = this.graph.getLower();
         double upperBound = this.graph.getUpper();
         boolean isPath = false, isPathR, isPathD;
+        /**Sprawdzenie czy zostały wybrane dwa węzły oraz czy istnieje ścieżka pomiędzy nimi*/
         if (clickedNodes[0] != null && clickedNodes[1] != null) {
             path = graph.findPath(clickedNodes[0].id, clickedNodes[1].id);
             if(path.length > 0)
@@ -138,6 +144,7 @@ public class GraphPanel extends JPanel implements MouseListener {
             int j = 0;
             isPathR = false;
             isPathD = false;
+            /**Sprawdzenie czy prawe lub dolne połączenie jest ścieżką*/
             while (isPath && j < path.length) {
                 if (path[j].getId() == i) {
                     if (j != 0) {
@@ -163,6 +170,7 @@ public class GraphPanel extends JPanel implements MouseListener {
             double rightVal = graph.getRightValue(i);
             double downVal = graph.getDownValue(i);
             if (rightVal != -1) {
+                /**Ustawienie koloru połączenia zależnie od tego czy prawe połączenie jest częścią ścieżki*/
                 if(isPathR)
                         g.setColor(Color.BLUE);
                 else
@@ -175,6 +183,7 @@ public class GraphPanel extends JPanel implements MouseListener {
                 );
             }
             if (downVal != -1) {
+                /**Ustawienie koloru połączenia zależnie od tego czy dolne połączenie jest częścią ścieżki*/
                 if(isPathD)
                     g.setColor(Color.BLUE);
                 else
