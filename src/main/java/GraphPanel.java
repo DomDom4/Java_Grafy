@@ -132,16 +132,6 @@ public class GraphPanel extends JPanel implements MouseListener {
             path = graph.findPath(clickedNodes[0].id, clickedNodes[1].id);
             if (path.length > 0)
                 isPath = true;
-            /*else {
-                isPath = false;
-                JOptionPane.showConfirmDialog(
-                        null,
-                        "No connection between chosen nodes",
-                        "Path",
-                        JOptionPane.DEFAULT_OPTION,
-                        JOptionPane.INFORMATION_MESSAGE
-                );
-            }*/
         }
 
         g.setStroke(new BasicStroke(4));
