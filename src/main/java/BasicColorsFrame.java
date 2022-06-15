@@ -31,14 +31,17 @@ public abstract class BasicColorsFrame extends JFrame {
      * @param button guzik, którego właściwości trzeba zmienić
      */
     protected void setButtonProperties(JButton button) {
-        button.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                button.setBackground(buttonHoverColor);
-            }
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                button.setBackground(buttonColor);
-            }
-        });
+        if(button.isEnabled()) {
+            button.addMouseListener(new java.awt.event.MouseAdapter() {
+                public void mouseEntered(java.awt.event.MouseEvent evt) {
+                    button.setBackground(buttonHoverColor);
+                }
+
+                public void mouseExited(java.awt.event.MouseEvent evt) {
+                    button.setBackground(buttonColor);
+                }
+            });
+        }
 
         button.setBackground(buttonColor);
         button.setForeground(Color.white);

@@ -1,4 +1,5 @@
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -25,21 +26,21 @@ public class FileFrame extends MethodFrame implements ActionListener {
         select.addActionListener(this);
 
         open = new JButton("Open");
-        setButtonProperties(open);
-        open.addActionListener(this);
         open.setEnabled(false);
+        setButtonProperties(open);
+        open.setBackground(new Color(245, 179, 132));
+        open.addActionListener(this);
 
         integrity = new JButton("BFS");
+        integrity.setEnabled(false);
         setButtonProperties(integrity);
         integrity.addActionListener(this);
-        integrity.setEnabled(false);
 
         back.addActionListener(this);
 
         menu.add(selectedFile);
         menu.add(select);
         menu.add(open);
-        menu.add(integrity);
 
         this.setVisible(true);
     }
@@ -94,6 +95,7 @@ public class FileFrame extends MethodFrame implements ActionListener {
             selectedFile.setText("Selected file: " + actionFile.getSelectedFile().getName());
             select.setText("Change");
             open.setEnabled(true);
+            setButtonProperties(open);
         }
     }
 
