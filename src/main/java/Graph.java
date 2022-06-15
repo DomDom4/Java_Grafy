@@ -179,10 +179,14 @@ public class Graph {
         temp[k] = this.nodes[end];
         k++;
 
-        while (end != start) {
+        while (end != start && k<ngsize) {
             temp[k] = p[end];
             end = p[end].getId();
             k++;
+        }
+
+        if(end != start) {
+            return new Node[0];
         }
 
         Node[] path = new Node[k];
