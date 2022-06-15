@@ -24,7 +24,7 @@ public class GraphPanel extends JPanel implements MouseListener {
         if (isTooBig() == true) {
             JOptionPane.showConfirmDialog(
                     null,
-                    "Dimensions too big to draw",
+                    "Dimensions too big to draw, but graph was generated :)",
                     "Info",
                     JOptionPane.DEFAULT_OPTION,
                     JOptionPane.PLAIN_MESSAGE
